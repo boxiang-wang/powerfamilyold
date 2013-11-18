@@ -133,8 +133,9 @@ plot.gcdnet(fit1)
 
 
 
-q = 2
-fit2 <- .Fortran("powerfamilyNET", q, lam2, nobs, nvars, 
+qv = 2
+qv = as.double(qv)
+fit2 <- .Fortran("powerfamilyNET", qv, lam2, nobs, nvars, 
                  as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
                  flmin, ulam, eps, isd, maxit, nalam = integer(1), b0 = double(nlam), 
                  beta = double(pmax * nlam), ibeta = integer(pmax), nbeta = integer(nlam), 
