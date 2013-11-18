@@ -331,7 +331,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                  END IF
                  d = d + dl (i) * y (i)
                END DO
-               d = - capm * d / nobs !!!!!!!!!
+               d = - 1.0D0 / capm * d / nobs !!!!!!!!!
                IF (d /= 0.0D0) THEN
                   b (0) = b (0) +  d
                   r = r + y * d
@@ -377,7 +377,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                         END IF
                      d = d + dl (i) * y (i)
                   END DO !!!!!!!!!!!!!!!!!!!!!!
-                  d = - capm * d / nobs !!!!!!!!!
+                  d = - 1.0D0 / capm * d / nobs !!!!!!!!!
                   IF (d /= 0.0D0) THEN
                      b (0) = b (0) + d
                      r = r + y * d
