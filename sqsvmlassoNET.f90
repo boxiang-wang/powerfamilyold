@@ -1,16 +1,15 @@
 ! --------------------------------------------------------------------------
-! powerfamilyNET.f90: the GCD algorithm for loss function of power family. !!!
+! sqsvmlassoNET.f90: the GCD algorithm for squared SVM with sqaured hinge loss.
 ! --------------------------------------------------------------------------
 ! 
 ! USAGE:
 ! 
-! call powerfamilyNET (q, lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, &
+! call sqsvmlassoNET (lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, &
 ! & pmax, nlam, flmin, ulam, eps, isd, maxit, nalam, b0, beta, ibeta, &
-! & nbeta, alam, npass, jerr) !!!
+! & nbeta, alam, npass, jerr)
 ! 
 ! INPUT ARGUMENTS:
 ! 
-!    q = the parameter in power family model. !!!
 !    lam2 = regularization parameter for the quadratic penalty of the coefficients
 !    nobs = number of observations
 !    nvars = number of predictor variables
@@ -76,12 +75,13 @@
 ! 
 ! REFERENCES:
 !    Yang, Y. and Zou, H. (2012). An Efficient Algorithm for Computing The HHSVM and Its Generalizations.
-!    Journal of Computational and Graphical Statistics, 22, 396-415. 
+!    Journal of Computational and Graphical Statistics, 22, 396-415.
 
 
-SUBROUTINE powerfamilyNET (q, lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, &
-& pmax, nlam, flmin, ulam, eps, isd, maxit, nalam, b0, beta, ibeta, &
-& nbeta, alam, npass, jerr) !!!
+! --------------------------------------------------
+SUBROUTINE sqsvmlassoNET (lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, pmax, &
+& nlam, flmin, ulam, eps, isd, maxit, nalam, b0, beta, ibeta, nbeta, &
+& alam, npass, jerr)
 ! --------------------------------------------------
       IMPLICIT NONE
     ! - - - arg types - - -
@@ -98,11 +98,9 @@ SUBROUTINE powerfamilyNET (q, lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, &
       INTEGER :: jd (*)
       INTEGER :: ibeta (pmax)
       INTEGER :: nbeta (nlam)
-      DOUBLE PRECISION :: capm
       DOUBLE PRECISION :: lam2
       DOUBLE PRECISION :: flmin
       DOUBLE PRECISION :: eps
-      DOUBLE PRECISION :: q
       DOUBLE PRECISION :: x (nobs, nvars)
       DOUBLE PRECISION :: y (nobs)
       DOUBLE PRECISION :: pf (nvars)
@@ -148,8 +146,8 @@ SUBROUTINE powerfamilyNET (q, lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, &
       pf = Max (0.0D0, pf)
       pf2 = Max (0.0D0, pf2)
       CALL standard (nobs, nvars, x, ju, isd, xmean, xnorm, maj)
-      CALL powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
-     & pf, pf2, dfmax, pmax, nlam, flmin, ulam, eps, maxit, nalam, b0, beta, &
+      CALL sqsvmlassoNETpath (lam2, maj, nobs, nvars, x, y, ju, pf, pf2, &
+     & dfmax, pmax, nlam, flmin, ulam, eps, maxit, nalam, b0, beta, &
      & ibeta, nbeta, alam, npass, jerr)
       IF (jerr > 0) RETURN! check error after calling function
 ! - - - organize beta afterward - - -
@@ -165,10 +163,10 @@ SUBROUTINE powerfamilyNET (q, lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, &
       END DO
       DEALLOCATE (ju, xmean, xnorm, maj)
       RETURN
-END SUBROUTINE powerfamilyNET !!!
+END SUBROUTINE sqsvmlassoNET
 ! --------------------------------------------------
-SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
-& pf, pf2, dfmax, pmax, nlam, flmin, ulam, eps, maxit, nalam, b0, beta, m, &
+SUBROUTINE sqsvmlassoNETpath (lam2, maj, nobs, nvars, x, y, ju, pf, pf2, &
+& dfmax, pmax, nlam, flmin, ulam, eps, maxit, nalam, b0, beta, m, &
 & nbeta, alam, npass, jerr)
 ! --------------------------------------------------
       IMPLICIT NONE
@@ -189,10 +187,8 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       INTEGER :: ju (nvars)
       INTEGER :: m (pmax)
       INTEGER :: nbeta (nlam)
-      DOUBLE PRECISION :: capm
       DOUBLE PRECISION :: lam2
       DOUBLE PRECISION :: eps
-      DOUBLE PRECISION :: q
       DOUBLE PRECISION :: x (nobs, nvars)
       DOUBLE PRECISION :: y (nobs)
       DOUBLE PRECISION :: pf (nvars)
@@ -215,7 +211,6 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: b
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: oldbeta
       DOUBLE PRECISION, DIMENSION (:), ALLOCATABLE :: r
-      INTEGER :: i
       INTEGER :: k
       INTEGER :: j
       INTEGER :: l
@@ -244,14 +239,14 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       npass = 0
       ni = npass
       mnl = Min (mnlam, nlam)
-      capm = 2.0D0 * (q + 1.0D0) ** 2.0D0 / q !!!
-      maj = maj * capm !!!
+      maj = 4.0 * maj
       IF (flmin < 1.0D0) THEN
          flmin = Max (mfl, flmin)
          alf = flmin ** (1.0D0/(nlam-1.0D0))
       END IF
 ! --------- lambda loop ----------------------------
       DO l = 1, nlam
+! --------- computing lambda ----------------------------
          IF (flmin >= 1.0D0) THEN
             al = ulam (l)
          ELSE
@@ -261,18 +256,12 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                al = big
             ELSE IF (l == 2) THEN
                al = 0.0D0
-               DO i = 1, nobs !!!!!!!!!!!!!!!!!!!!!!
-                  IF (r(i) > ((q + 1.0D0) / q)) THEN
-                     dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
-                  ELSE
-                     dl (i) = -1.0D0
-                  END IF
-               END DO !!!!!!!!!!!!!!!!!!!!!!
+               dl = 2.0 * dim (1.0D0, r)
                DO j = 1, nvars
                   IF (ju(j) /= 0) THEN
                      IF (pf(j) > 0.0D0) THEN
-                        u = dot_product (dl*y, x(:, j))
-                        al = Max (al, Abs(u)/pf(j))
+                        al = Max (al, Abs(dot_product(y*dl, x(:, &
+                       & j)))/pf(j))
                      END IF
                   END IF
                END DO
@@ -291,26 +280,19 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                DO k = 1, nvars
                   IF (ju(k) /= 0) THEN
                      oldb = b (k)
-                     u = 0.0D0
-                     DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > ((q + 1.0D0) / q)) THEN
-                           dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
-                           ELSE
-                              dl (i) = -1.0D0
-                        END IF
-                        u = u + dl (i) * y (i) * x (i, k)
-                     END DO !!!!!!!!!!!!!!!!!!!!!!
-                     u = maj (k) * b (k) - u / nobs
+                     dl = 2.0 * dim (1.0D0, r)
+                     u = dot_product (y * dl, x(:, k))
+                     u = maj (k) * b (k) + u / nobs
                      v = al * pf (k)
                      v = Abs (u) - v
                      IF (v > 0.0D0) THEN
-                     	b (k) = sign (v, u) / (maj(k) + pf2(k) * lam2)
+                        b (k) = sign (v, u) / (maj(k) + pf2(k) * lam2)
                      ELSE
                         b (k) = 0.0D0
                      END IF
                      d = b (k) - oldb
                      IF (Abs(d) > 0.0D0) THEN
-                        dif = Max (dif, capm * d ** 2)  !!!
+                        dif = Max (dif, d**2)
                         r = r + y * x (:, k) * d
                         IF (mm(k) == 0) THEN
                            ni = ni + 1
@@ -322,20 +304,13 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                   END IF
                END DO
                IF (ni > pmax) EXIT
-               d = 0.0D0
-               DO i = 1, nobs
-                  IF (r(i) > ((q + 1.0D0) / q)) THEN
-                     dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
-                     ELSE
-                        dl (i) = -1.0D0
-                 END IF
-                 d = d + dl (i) * y (i)
-               END DO
-               d = - 1.0D0 / capm * d / nobs !!!!!!!!!
+               dl = 2.0 * dim (1.0D0, r)
+               d = sum(y * dl)
+               d = 0.25 * d / nobs
                IF (d /= 0.0D0) THEN
-                  b (0) = b (0) +  d
+                  b (0) = b (0) + d
                   r = r + y * d
-                  dif = Max (dif, capm * d ** 2) !!!
+                  dif = Max (dif, d**2)
                END IF
                IF (dif < eps) EXIT
         ! --inner loop----------------------
@@ -345,16 +320,9 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                   DO j = 1, ni
                      k = m (j)
                      oldb = b (k)
-                     u = 0.0D0
-                     DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > ((q + 1.0D0) / q)) THEN
-                           dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
-                           ELSE
-                              dl (i) = -1.0D0
-                        END IF
-                        u = u + dl (i) * y (i) * x (i, k)
-                     END DO !!!!!!!!!!!!!!!!!!!!!!
-                     u = maj (k) * b (k) - u / nobs
+                     dl = 2.0 * dim (1.0D0, r)
+                     u = dot_product (y * dl, x(:, k))
+                     u = maj (k) * b (k) + u / nobs
                      v = al * pf (k)
                      v = Abs (u) - v
                      IF (v > 0.0D0) THEN
@@ -364,24 +332,17 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                      END IF
                      d = b (k) - oldb
                      IF (Abs(d) > 0.0D0) THEN
-                        dif = Max (dif, capm * d ** 2) !!!
+                        dif = Max (dif, d**2)
                         r = r + y * x (:, k) * d
                      END IF
                   END DO
-                  d = 0.0D0
-                     DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > ((q + 1.0D0) / q)) THEN
-                           dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
-                           ELSE
-                              dl (i) = -1.0D0
-                        END IF
-                     d = d + dl (i) * y (i)
-                  END DO !!!!!!!!!!!!!!!!!!!!!!
-                  d = - 1.0D0 / capm * d / nobs !!!!!!!!!
+                  dl = 2.0 * dim (1.0D0, r)
+                  d = sum(y * dl)
+                  d = 0.25 * d / nobs
                   IF (d /= 0.0D0) THEN
                      b (0) = b (0) + d
                      r = r + y * d
-                     dif = Max (dif, capm * d ** 2) !!!
+                     dif = Max (dif, d**2)
                   END IF
                   IF (dif < eps) EXIT
                END DO
@@ -420,4 +381,4 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       END DO
       DEALLOCATE (b, oldbeta, r, mm)
       RETURN
-END SUBROUTINE powerfamilyNETpath !!!
+END SUBROUTINE sqsvmlassoNETpath

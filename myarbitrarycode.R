@@ -73,15 +73,17 @@ delta <- as.double(delta)
 
 source("plot.gcdnet.R")
 source("utilities.R")
-library(Matrix)
+require(Matrix)
 
 #dyn.load("auxiliary.dll")
 dyn.load("hsvmlassoNET.dll")
+dyn.load("sqsvmlassoNET.dll")
 dyn.load("powerfamilyNET.dll")
-is.loaded("powerfamilyNET")
-is.loaded("hsvmlassoNET")
 
 
+
+
+delta=0.01
 #################################################################################
 # call Fortran core
 fit <- .Fortran("hsvmlassoNET", delta, lam2, nobs, nvars, 
@@ -94,11 +96,6 @@ fit <- .Fortran("hsvmlassoNET", delta, lam2, nobs, nvars,
 fit <- getoutput(fit, maxit, pmax, nvars, vnames)
 fit <- c(fit, list(npasses = fit$npass, jerr = fit$jerr))
 class(fit) <- c("hsvmpath")
-fit
-
-
-
-
 if (is.null(lambda)) 
   fit$lambda <- lamfix(outlist$lambda)
 #fit$call <- this.call
@@ -110,16 +107,33 @@ plot.gcdnet(fit)
 
 
 
-fit1 <- .Fortran("hsvmlassoNET", delta, lam2, nobs, nvars, 
+
+#################################################################################
+# call Fortran core
+fit1 <- .Fortran("sqsvmlassoNET", lam2, nobs, nvars, 
                 as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
                 flmin, ulam, eps, isd, maxit, nalam = integer(1), b0 = double(nlam), 
                 beta = double(pmax * nlam), ibeta = integer(pmax), nbeta = integer(nlam), 
                 alam = double(nlam), npass = integer(1), jerr = integer(1))
+#################################################################################
+# output
+fit1 <- getoutput(fit1, maxit, pmax, nvars, vnames)
+fit1 <- c(fit1, list(npasses = fit1$npass, jerr = fit1$jerr))
+class(fit1) <- c("hsvmpath")
+if (is.null(lambda)) 
+  fit1$lambda <- lamfix(outlist$lambda)
+#fit$call <- this.call
+#################################################################################
+class(fit1) <- c("gcdnet", class(fit1))
+fit1
 
-
-
-class(fit1)= c("gcdnet", class(fit1))
 plot.gcdnet(fit1)
+
+
+
+
+
+q = 2
 fit2 <- .Fortran("powerfamilyNET", q, lam2, nobs, nvars, 
                  as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
                  flmin, ulam, eps, isd, maxit, nalam = integer(1), b0 = double(nlam), 
