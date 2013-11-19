@@ -1,4 +1,5 @@
 
+rm(list=ls(all=TRUE))
 setwd("D:\\GitHub\\powerfamily")
 
 #load("FHT.rda")
@@ -7,10 +8,13 @@ setwd("D:\\GitHub\\powerfamily")
 #y <- drop(y)
 #x <- as.matrix(x)
 
-x = matrix(c(1,0,-1,-1,1,0),3,2)
-y=c(-1,-1,1)
+#x = matrix(c(1,0,-1,-1,1,0),3,2)
+#y=c(-1,-1,1)
 
-
+x_log <- matrix(rnorm(100*10),100,10)
+y_log <- sample(c(-1,1),100,replace=TRUE)
+x = x_log
+y = y_log
 
 np <- dim(x)
 nobs <- as.integer(np[1])
@@ -90,7 +94,7 @@ dyn.load("sqsvmlassoNET.dll")
 dyn.load("powerfamilyNET.dll")
 
 dyn.load("hsvmlassoNET.dll")
-dyn.unload("hsvmlassoNET.dll")
+#dyn.unload("hsvmlassoNET.dll")
 
 # del hsvmlassoNETn.dll hsvmlassoNETn.o
 # Rcmd SHLIB hsvmlassoNETn.f90 auxiliary.f90 -o hsvmlassoNETn.dll
@@ -110,7 +114,7 @@ fit <- getoutput(fit, maxit, pmax, nvars, vnames)
 fit <- c(fit, list(npasses = fit$npass, jerr = fit$jerr))
 class(fit) <- c("hsvmpath")
 if (is.null(lambda)) 
-  fit$lambda <- lamfix(outlist$lambda)
+  fit$lambda <- lamfix(fit$lambda)
 #fit$call <- this.call
 #################################################################################
 class(fit) <- c("gcdnet", class(fit))
@@ -176,6 +180,18 @@ if (is.null(lambda))
   fit2$lambda <- lamfix(outlist$lambda)
 
 class(fit2) <- c("gcdnet", class(fit2))
+
 fit2
 
 plot.gcdnet(fit2)
+
+install.packages('gcdnet')
+require('gcdnet')
+
+x_log <- matrix(rnorm(100*10),100,10)
+y_log <- sample(c(-1,1),100,replace=TRUE)
+# LASSO
+m <- gcdnet(x=x_log,y=y_log,lambda2=0,method="log")
+plot(m)
+# elastic net with lambda2 = 1
+m <- gcdnet(
