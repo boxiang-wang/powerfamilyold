@@ -285,6 +285,7 @@ SUBROUTINE hsvmlassoNETpath (delta, lam2, maj, nobs, nvars, x, y, ju, &
             IF (ni > 0) oldbeta (m(1:ni)) = b (m(1:ni))
         ! --middle loop-------------------------------------
             DO
+								 					                        CALL  DBLEPR("v", -1, v, 1) 
                npass = npass + 1
                dif = 0.0D0
                DO k = 1, nvars
@@ -292,37 +293,48 @@ SUBROUTINE hsvmlassoNETpath (delta, lam2, maj, nobs, nvars, x, y, ju, &
                      oldb = b (k)
                      u = 0.0D0
                      DO i = 1, nobs
-                  IF (r(i) > 1.0D0) THEN
-                     dl (i) = 0.0D0
-                  ELSE IF (r(i) <= (1-delta)) THEN
-                     dl (i) = - 1.0D0
-                  ELSE
-                     dl (i) = (r(i)-1.0D0) / delta
-                  END IF
+                        IF (r(i) > 1.0D0) THEN
+                           dl (i) = 0.0D0
+                           ELSE IF (r(i) <= (1-delta)) THEN
+                              dl (i) = - 1.0D0
+                              ELSE
+                                 dl (i) = (r(i)-1.0D0) / delta
+                           END IF
                         u = u + dl (i) * y (i) * x (i, k)
-                        CALL  DBLEPR("u", -1, u, 1)
+                                            CALL  DBLEPR("u", -1, u, 1)
                      END DO
                      u = maj (k) * b (k) - u / nobs
+					                        CALL  DBLEPR("nu", -1, u, 1)
+					                        CALL  DBLEPR("al", -1, al, 1)
                      v = al * pf (k)
                      v = Abs (u) - v
+					 					                        CALL  DBLEPR("v", -1, v, 1) 
+						 				 					    CALL  DBLEPR("maj", -1, maj, 2)                                           
                      IF (v > 0.0D0) THEN
                      	b (k) = sign (v, u) / (maj(k) + pf2(k) * lam2)
+																	CALL  DBLEPR("exp", -1, (maj(k) + pf2(k) * lam2), 2)
+											 						CALL  DBLEPR("bk1", -1, b(k), 2)
                      ELSE
                         b (k) = 0.0D0
                      END IF
+					 						CALL  DBLEPR("bk", -1, b(k), 2)
                      d = b (k) - oldb
+					 					 	CALL  DBLEPR("d", -1, d, 2)
                      IF (Abs(d) > 0.0D0) THEN
                         dif = Max (dif, 2.0*d**2/delta)
                         r = r + y * x (:, k) * d
+						                    CALL  DBLEPR("r", -1, r, 3)
                         IF (mm(k) == 0) THEN
                            ni = ni + 1
                            IF (ni > pmax) EXIT
                            mm (k) = ni
                            m (ni) = k !indicate which one is non-zero
+						   RETURN
                         END IF
                      END IF
                   END IF
                END DO
+		       CALL  DBLEPR("d", -1, d, 3)
                IF (ni > pmax) EXIT
                d = 0.0D0
                DO i = 1, nobs

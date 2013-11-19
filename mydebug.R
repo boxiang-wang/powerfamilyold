@@ -1,11 +1,17 @@
 
 setwd("D:\\GitHub\\powerfamily")
 
-load("FHT.rda")
-y = FHT$y
-x = FHT$x
-y <- drop(y)
-x <- as.matrix(x)
+#load("FHT.rda")
+#y = FHT$y
+#x = FHT$x
+#y <- drop(y)
+#x <- as.matrix(x)
+
+x = matrix(c(1,0,-1,-1,1,0),3,2)
+y=c(-1,-1,1)
+
+
+
 np <- dim(x)
 nobs <- as.integer(np[1])
 nvars <- as.integer(np[2])
@@ -13,8 +19,8 @@ vnames <- colnames(x)
 
 nlambda = 100
 lambda.factor = ifelse(nobs < nvars, 0.01,1e-04)
-lambda = NULL
-lambda2 = 0.5
+lambda = c(0.5,0.1)
+lambda2 = 0.3
 pf = rep(1, nvars)
 pf2 = rep(1, nvars)
 #exclude, 
@@ -39,6 +45,9 @@ lam2 <- as.double(lambda2)
 pf <- as.double(pf)
 pf2 <- as.double(pf2)
 isd <- as.integer(standardize)
+
+isd = 0
+isd = as.integer(isd)
 eps <- as.double(eps)
 dfmax <- as.integer(dfmax)
 pmax <- as.integer(pmax)
@@ -76,26 +85,18 @@ source("utilities.R")
 require(Matrix)
 
 #dyn.load("auxiliary.dll")
-dyn.load("hsvmlassoNET.dll")
+
 dyn.load("sqsvmlassoNET.dll")
 dyn.load("powerfamilyNET.dll")
 
+dyn.load("hsvmlassoNET.dll")
 dyn.unload("hsvmlassoNET.dll")
-dyn.unload("sqsvmlassoNET.dll")
-dyn.unload("powerfamilyNET.dll")
 
-## cmd
-del hsvmlassoNET.dll hsvmlassoNET.o
-Rcmd SHLIB hsvmlassoNET.f90 auxiliary.f90 -o hsvmlassoNET.dll
-
-del sqsvmlassoNET.dll sqsvmlassoNET.o
-Rcmd SHLIB sqsvmlassoNET.f90 auxiliary.f90 -o sqsvmlassoNET.dll
-
-del powerfamilyNET.dll powerfamilyNET.o
-Rcmd SHLIB powerfamilyNET.f90 auxiliary.f90 -o powerfamilyNET.dll
-
-
-delta=0.01
+# del hsvmlassoNETn.dll hsvmlassoNETn.o
+# Rcmd SHLIB hsvmlassoNETn.f90 auxiliary.f90 -o hsvmlassoNETn.dll
+delta=0.5
+x = matrix(c(1,0,-1,-1,1,0),3,2)
+y=c(-1,-1,1)
 #################################################################################
 # call Fortran core
 fit <- .Fortran("hsvmlassoNET", delta, lam2, nobs, nvars, 
@@ -143,16 +144,28 @@ plot.gcdnet(fit1)
 
 
 
-
-
+delta=0.5
+x = matrix(c(1,0,-1,-1,1,0),3,2)
+y=c(-1,-1,1)
 qv = 2
 qv = as.double(qv)
+
+
+#dyn.load("powerfamilyNETn.dll")
+#dyn.unload("powerfamilyNETn.dll")
+
+#del powerfamilyNETn.dll powerfamilyNETn.o
+#Rcmd SHLIB powerfamilyNETn.f90 auxiliary.f90 -o powerfamilyNETn.dll
+
+
+#dyn.load("powerfamilyNETn.dll")
+
+
 fit2 <- .Fortran("powerfamilyNET", qv, lam2, nobs, nvars, 
                  as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
                  flmin, ulam, eps, isd, maxit, nalam = integer(1), b0 = double(nlam), 
                  beta = double(pmax * nlam), ibeta = integer(pmax), nbeta = integer(nlam), 
                  alam = double(nlam), npass = integer(1), jerr = integer(1))
-
 
 
 #################################################################################

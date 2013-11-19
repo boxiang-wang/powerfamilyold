@@ -262,7 +262,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
             ELSE IF (l == 2) THEN
                al = 0.0D0
                DO i = 1, nobs !!!!!!!!!!!!!!!!!!!!!!
-                  IF (r(i) > ((q + 1.0D0) / q)) THEN
+                  IF (r(i) > (q / (q + 1.0D0))) THEN
                      dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
                   ELSE
                      dl (i) = -1.0D0
@@ -293,7 +293,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                      oldb = b (k)
                      u = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > ((q + 1.0D0) / q)) THEN
+                     IF (r(i) > (q / (q + 1.0D0))) THEN
                            dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
                            ELSE
                               dl (i) = -1.0D0
@@ -324,7 +324,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                IF (ni > pmax) EXIT
                d = 0.0D0
                DO i = 1, nobs
-                  IF (r(i) > ((q + 1.0D0) / q)) THEN
+                  IF (r(i) > (q / (q + 1.0D0))) THEN
                      dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
                      ELSE
                         dl (i) = -1.0D0
@@ -347,7 +347,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                      oldb = b (k)
                      u = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > ((q + 1.0D0) / q)) THEN
+                        IF (r(i) > (q / (q + 1.0D0))) THEN
                            dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
                            ELSE
                               dl (i) = -1.0D0
@@ -370,7 +370,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                   END DO
                   d = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > ((q + 1.0D0) / q)) THEN
+                        IF (r(i) > (q / (q + 1.0D0))) THEN
                            dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
                            ELSE
                               dl (i) = -1.0D0

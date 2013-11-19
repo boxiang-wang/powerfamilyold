@@ -225,6 +225,9 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       INTEGER :: ni
       INTEGER :: me
       INTEGER, DIMENSION (:), ALLOCATABLE :: mm
+	        INTEGER :: testcount
+			
+			testcount = 0
 ! - - - begin - - -
 ! - - - allocate variables - - -
       ALLOCATE (b(0:nvars), STAT=jerr)
@@ -246,10 +249,11 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       mnl = Min (mnlam, nlam)
       capm = 2.0D0 * (q + 1.0D0) ** 2.0D0 / q !!!
       maj = maj * capm !!!
-      IF (flmin < 1.0D0) THEN
+	  IF (flmin < 1.0D0) THEN
          flmin = Max (mfl, flmin)
          alf = flmin ** (1.0D0/(nlam-1.0D0))
       END IF
+																																																								!CALL DBLEPR("alf", -1, alf, 2)														
 ! --------- lambda loop ----------------------------
       DO l = 1, nlam
          IF (flmin >= 1.0D0) THEN
@@ -262,7 +266,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
             ELSE IF (l == 2) THEN
                al = 0.0D0
                DO i = 1, nobs !!!!!!!!!!!!!!!!!!!!!!
-                  IF (r(i) > ((q + 1.0D0) / q)) THEN
+                  IF (r(i) > (q / (q + 1.0D0))) THEN
                      dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
                   ELSE
                      dl (i) = -1.0D0
@@ -289,31 +293,44 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                npass = npass + 1
                dif = 0.0D0
                DO k = 1, nvars
+			                                                                                            !CALL INTPR("kfirst", -1, k, 1)
                   IF (ju(k) /= 0) THEN
                      oldb = b (k)
+																										!CALL DBLEPR("b", -1, b, 2)
                      u = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > ((q + 1.0D0) / q)) THEN
+                        IF (r(i) > (q / (q + 1.0D0))) THEN
                            dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
                            ELSE
                               dl (i) = -1.0D0
                         END IF
                         u = u + dl (i) * y (i) * x (i, k)
+																										!CALL DBLEPR("u", -1, u, 1)
                      END DO !!!!!!!!!!!!!!!!!!!!!!
-                     u = maj (k) * b (k) - u / nobs
+                     u = maj (k) * b (k) - u / nobs                                                   
+																										!CALL DBLEPR("unew", -1, u, 1)
                      v = al * pf (k)
                      v = Abs (u) - v
+					 																				    !CALL DBLEPR("v", -1, v, 1)
                      IF (v > 0.0D0) THEN
                      	b (k) = sign (v, u) / (maj(k) + pf2(k) * lam2)
                      ELSE
                         b (k) = 0.0D0
                      END IF
+																										!CALL DBLEPR("bnew", -1, b, 2)
                      d = b (k) - oldb
                      IF (Abs(d) > 0.0D0) THEN
                         dif = Max (dif, capm * d ** 2)  !!!
+																										!CALL DBLEPR("r1", -1, r, 1)
                         r = r + y * x (:, k) * d
+						                                                                                !CALL DBLEPR("r2", -1, r, 1)
+																										!CALL INTPR("mm", -1, mm, 2)
+																										!CALL INTPR("k", -1, k, 1)
+																										!CALL INTPR("mm(k)", -1, mm(k), 1)
+																										!CALL INTPR("ni", -1, ni, 1)
                         IF (mm(k) == 0) THEN
                            ni = ni + 1
+						                                                                                !CALL DBLEPR("ni1", -1, ni, 1)
                            IF (ni > pmax) EXIT
                            mm (k) = ni
                            m (ni) = k !indicate which one is non-zero
@@ -324,7 +341,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                IF (ni > pmax) EXIT
                d = 0.0D0
                DO i = 1, nobs
-                  IF (r(i) > ((q + 1.0D0) / q)) THEN
+                     IF (r(i) > (q / (q + 1.0D0))) THEN
                      dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
                      ELSE
                         dl (i) = -1.0D0
@@ -335,8 +352,15 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                IF (d /= 0.0D0) THEN
                   b (0) = b (0) +  d
                   r = r + y * d
+																						            !CALL DBLEPR("difbefore", -1, dif, 1)
                   dif = Max (dif, capm * d ** 2) !!!
-               END IF
+               END IF 
+																									!CALL DBLEPR("capm", -1, capm, 1)
+																									!CALL DBLEPR("d", -1, d, 1)
+																																																		                                     !CALL DBLEPR("capm*d**2", -1, capm*d**2, 1)
+																									!CALL DBLEPR("difafter", -1, dif, 1)
+																									!CALL INTPR("m", -1, m, 2)
+																									!CALL INTPR("ni", -1, ni, 1)
                IF (dif < eps) EXIT
         ! --inner loop----------------------
                DO
@@ -347,9 +371,9 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                      oldb = b (k)
                      u = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > ((q + 1.0D0) / q)) THEN
+                        IF (r(i) > (q / (q + 1.0D0))) THEN
                            dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
-                           ELSE
+						   ELSE
                               dl (i) = -1.0D0
                         END IF
                         u = u + dl (i) * y (i) * x (i, k)
@@ -363,14 +387,24 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                         b (k) = 0.0D0
                      END IF
                      d = b (k) - oldb
+					 
+																						!CALL DBLEPR("diffinnerbefore", -1, dif, 1)
                      IF (Abs(d) > 0.0D0) THEN
                         dif = Max (dif, capm * d ** 2) !!!
                         r = r + y * x (:, k) * d
                      END IF
+					 
+					 
+					                                                                            !CALL INTPR("j", -1, j, 1) 
+																								!CALL DBLEPR("capmnewj", -1, capm, 1)
+																									
+																																																		                                !CALL DBLEPR("capm*d**2newj", -1, capm*d**2, 1)
+																						!CALL DBLEPR("diffinnerafter", -1, dif, 1)	
                   END DO
+
                   d = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > ((q + 1.0D0) / q)) THEN
+                        IF (r(i) > (q / (q + 1.0D0))) THEN
                            dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * (q / (q + 1.0D0)) ** (q + 1.0D0)
                            ELSE
                               dl (i) = -1.0D0
@@ -378,14 +412,27 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                      d = d + dl (i) * y (i)
                   END DO !!!!!!!!!!!!!!!!!!!!!!
                   d = - 1.0D0 / capm * d / nobs !!!!!!!!!
+				  																			!CALL DBLEPR("diflastbefore", -1, dif, 1)	
                   IF (d /= 0.0D0) THEN
                      b (0) = b (0) + d
                      r = r + y * d
                      dif = Max (dif, capm * d ** 2) !!!
                   END IF
-                  IF (dif < eps) EXIT
+																									!CALL INTPR("j", -1, j, 1) 
+																								!CALL DBLEPR("capmnew", -1, capm, 1)
+														                                ! CALL DBLEPR("capm*d**2new", -1, capm*d**2, 1)
+																						!CALL DBLEPR("diflastafter", -1, dif, 1)	
+			!testcount = testcount + 1	
+																									!CALL INTPR ("count", -1, testcount, 1)
+			!IF (testcount == 5)	RETURN			
+                  IF (dif < eps) EXIT 
                END DO
             END DO
+			
+
+			
+			
+			
             IF (ni > pmax) EXIT
         !--- this is the final check ------------------------
             vrg = 1
