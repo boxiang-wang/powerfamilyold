@@ -1,3 +1,12 @@
+######################################################################
+## These functions are modifications from the
+## gcdnet package:
+## Yi Yang, Hui Zou, (2013).
+## An Efficient Algorithm for Computing HHSVM and Its Generalization, 
+## Journal of Computational and Graphical Statistics.
+## http://users.stat.umn.edu/~zouxx019/Papers/gcdnet.pdf
+## or http://users.stat.umn.edu/~yiyang/resources/papers/JCGS_gcdnet.pdf
+
 powerfamilypath <- function(x, y, nlam, flmin, ulam, isd, 
                      eps, dfmax, pmax, jd, pf, pf2, maxit, lam2, qv, nobs, nvars, 
                      vnames) {
@@ -118,20 +127,12 @@ gcdnetpower <- function(x, y, nlambda = 100, method = c("hhsvm","logit", "sqsvm"
                                  nobs, nvars, vnames), 
                 hhsvm = hsvmpath(x, y, nlam, flmin, 
                                  ulam, isd, eps, dfmax, pmax, jd, pf, pf2, maxit, lam2, delta, 
-                                 nobs, nvars, vnames), 
-                logit = logitpath(x, y, nlam, flmin, 
-                                  ulam, isd, eps, dfmax, pmax, jd, pf, pf2, maxit, lam2, nobs, 
-                                  nvars, vnames), 
-                sqsvm = sqsvmpath(x, y, nlam, flmin, 
-                                  ulam, isd, eps, dfmax, pmax, jd, pf, pf2, maxit, lam2, nobs, 
-                                  nvars, vnames),
-                ls = lspath(x, y, nlam, flmin, 
-                            ulam, isd, eps, dfmax, pmax, jd, pf, pf2, maxit, lam2, nobs, 
-                            nvars, vnames))
+                                 nobs, nvars, vnames)
+                )
   if (is.null(lambda)) 
     fit$lambda <- lamfix(fit$lambda)
   fit$call <- this.call
   #################################################################################
-  class(fit) <- c("gcdnet", class(fit))
+  class(fit) <- c("GCDpower", class(fit))
   fit
 } 

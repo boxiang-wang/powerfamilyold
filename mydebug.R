@@ -122,6 +122,15 @@ fit
 
 plot.gcdnet(fit)
 
+print(predict(fit,type="class",newx=FHT$x[2:5,]))
+
+b0 <- t(as.matrix(fit$b0))
+rownames(b0) <- "(Intercept)"
+nbeta <- rbind2(b0, fit$beta)
+
+dim(nbeta)
+
+
 
 
 
@@ -163,7 +172,7 @@ qv = as.double(qv)
 
 
 #dyn.load("powerfamilyNETn.dll")
-
+qv=as.double(2)
 
 fit2 <- .Fortran("powerfamilyNET", qv, lam2, nobs, nvars, 
                  as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
@@ -183,6 +192,11 @@ class(fit2) <- c("gcdnet", class(fit2))
 
 fit2
 
+print(predict(fit2,type="class",newx=FHT$x[2:5,]))
+
+
+
+
 plot.gcdnet(fit2)
 
 install.packages('gcdnet')
@@ -193,5 +207,32 @@ y_log <- sample(c(-1,1),100,replace=TRUE)
 # LASSO
 m <- gcdnet(x=x_log,y=y_log,lambda2=0,method="log")
 plot(m)
+
+
+#load("FHT.rda")
+#y = FHT$y
+#x = FHT$x
+#y <- drop(y)
+#x <- as.matrix(x)
+
+
+
+rm(list=ls(all=TRUE))
+setwd("D:\\GitHub\\powerfamily")
+library(gcdnet)
+load("FHT.rda")
+y = FHT$y
+x = FHT$x
+# LASSO
+m <- gcdnet(x=FHT$x,y=FHT$y,
+            lambda = c(0.17,0.05,0.005),
+            lambda2=0.2,method="hhsvm")
+plot(m, xvar="lambda")
+
+m = gcdnet(x=FHT$x,y=FHT$y)
+print(predict(m,type="class",newx=FHT$x[2:5,]))
+
+
 # elastic net with lambda2 = 1
-m <- gcdnet(
+m <- gcdnet(x=x,y=y,lambda2=0,method="hhsvm")
+plot(m, color=T)
