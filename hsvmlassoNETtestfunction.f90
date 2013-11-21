@@ -257,6 +257,7 @@ SUBROUTINE hsvmlassoNETpath (delta, lam2, maj, nobs, nvars, x, y, ju, &
             ELSE IF (l == 1) THEN
                al = big
             ELSE IF (l == 2) THEN
+			                                                                  CALL DBLEPR("r", -1, dl, 100)
                al = 0.0D0
                DO i = 1, nobs
                   IF (r(i) > 1.0D0) THEN
@@ -267,15 +268,18 @@ SUBROUTINE hsvmlassoNETpath (delta, lam2, maj, nobs, nvars, x, y, ju, &
                      dl (i) = (r(i)-1.0D0) / delta
                   END IF
                END DO
+																				CALL DBLEPR("dl", -1, dl, 100)
                DO j = 1, nvars
                   IF (ju(j) /= 0) THEN
                      IF (pf(j) > 0.0D0) THEN
-                        u = dot_product (dl*y, x(:, j))
+                        u = dot_product (dl*y, x(:, j))              
                         al = Max (al, Abs(u)/pf(j))
                      END IF
+																			CALL DBLEPR("al1", -1, al, 1)
                   END IF
                END DO
                al = al * alf / nobs
+																			CALL DBLEPR("al2", -1, al, 1)
             END IF
          END IF
          ctr = 0
@@ -285,7 +289,7 @@ SUBROUTINE hsvmlassoNETpath (delta, lam2, maj, nobs, nvars, x, y, ju, &
             IF (ni > 0) oldbeta (m(1:ni)) = b (m(1:ni))
         ! --middle loop-------------------------------------
             DO
-								 					                        CALL  DBLEPR("v", -1, v, 1) 
+								 					                       ! CALL  DBLEPR("v", -1, v, 1) 
                npass = npass + 1
                dif = 0.0D0
                DO k = 1, nvars
@@ -301,29 +305,29 @@ SUBROUTINE hsvmlassoNETpath (delta, lam2, maj, nobs, nvars, x, y, ju, &
                                  dl (i) = (r(i)-1.0D0) / delta
                            END IF
                         u = u + dl (i) * y (i) * x (i, k)
-                                            CALL  DBLEPR("u", -1, u, 1)
+                                           ! CALL  DBLEPR("u", -1, u, 1)
                      END DO
                      u = maj (k) * b (k) - u / nobs
-					                        CALL  DBLEPR("nu", -1, u, 1)
-					                        CALL  DBLEPR("al", -1, al, 1)
+					                       ! CALL  DBLEPR("nu", -1, u, 1)
+					                       ! CALL  DBLEPR("al", -1, al, 1)
                      v = al * pf (k)
                      v = Abs (u) - v
-					 					                        CALL  DBLEPR("v", -1, v, 1) 
-						 				 					    CALL  DBLEPR("maj", -1, maj, 2)                                           
+					 					                        !CALL  DBLEPR("v", -1, v, 1) 
+						 				 					   ! CALL  DBLEPR("maj", -1, maj, 2)                                           
                      IF (v > 0.0D0) THEN
                      	b (k) = sign (v, u) / (maj(k) + pf2(k) * lam2)
-																	CALL  DBLEPR("exp", -1, (maj(k) + pf2(k) * lam2), 2)
-											 						CALL  DBLEPR("bk1", -1, b(k), 2)
+																	!CALL  DBLEPR("exp", -1, (maj(k) + pf2(k) * lam2), 2)
+											 						!CALL  DBLEPR("bk1", -1, b(k), 2)
                      ELSE
                         b (k) = 0.0D0
                      END IF
-					 						CALL  DBLEPR("bk", -1, b(k), 2)
+					 						!CALL  DBLEPR("bk", -1, b(k), 2)
                      d = b (k) - oldb
-					 					 	CALL  DBLEPR("d", -1, d, 2)
+					 					 	!CALL  DBLEPR("d", -1, d, 2)
                      IF (Abs(d) > 0.0D0) THEN
                         dif = Max (dif, 2.0*d**2/delta)
                         r = r + y * x (:, k) * d
-						                    CALL  DBLEPR("r", -1, r, 3)
+						                   ! CALL  DBLEPR("r", -1, r, 3)
                         IF (mm(k) == 0) THEN
                            ni = ni + 1
                            IF (ni > pmax) EXIT
@@ -334,7 +338,7 @@ SUBROUTINE hsvmlassoNETpath (delta, lam2, maj, nobs, nvars, x, y, ju, &
                      END IF
                   END IF
                END DO
-		       CALL  DBLEPR("d", -1, d, 3)
+		      ! CALL  DBLEPR("d", -1, d, 3)
                IF (ni > pmax) EXIT
                d = 0.0D0
                DO i = 1, nobs

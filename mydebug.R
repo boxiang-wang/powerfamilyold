@@ -11,10 +11,9 @@ setwd("D:\\GitHub\\powerfamily")
 #x = matrix(c(1,0,-1,-1,1,0),3,2)
 #y=c(-1,-1,1)
 
-x_log <- matrix(rnorm(100*10),100,10)
-y_log <- sample(c(-1,1),100,replace=TRUE)
-x = x_log
-y = y_log
+load("FHT.rda")
+y = FHT$y
+x = FHT$x
 
 np <- dim(x)
 nobs <- as.integer(np[1])
@@ -23,8 +22,8 @@ vnames <- colnames(x)
 
 nlambda = 100
 lambda.factor = ifelse(nobs < nvars, 0.01,1e-04)
-lambda = c(0.5,0.1)
-lambda2 = 0.3
+lambda = NULL
+lambda2 = 0
 pf = rep(1, nvars)
 pf2 = rep(1, nvars)
 #exclude, 
@@ -83,7 +82,7 @@ if (!all(y %in% c(-1, 1)))
 if (delta < 0) 
   stop("delta must be non-negative")
 delta <- as.double(delta)
-
+delta=2
 source("plot.gcdnet.R")
 source("utilities.R")
 require(Matrix)
@@ -92,13 +91,16 @@ require(Matrix)
 
 dyn.load("sqsvmlassoNET.dll")
 dyn.load("powerfamilyNET.dll")
+dyn.unload("powerfamilyNET.dll")
 
-dyn.load("hsvmlassoNET.dll")
+dyn.unload("hsvmlassoNET.dll")
 #dyn.unload("hsvmlassoNET.dll")
 
-# del hsvmlassoNETn.dll hsvmlassoNETn.o
-# Rcmd SHLIB hsvmlassoNETn.f90 auxiliary.f90 -o hsvmlassoNETn.dll
-delta=0.5
+# del hsvmlassoNETtestfunction.dll hsvmlassoNETtestfunction.o
+# Rcmd SHLIB hsvmlassoNETtestfunction.f90 auxiliary.f90 -o hsvmlassoNETtestfunction.dll
+# dyn.load("hsvmlassoNETtestfunction.dll")
+# dyn.unload("hsvmlassoNETtestfunction.dll")
+
 x = matrix(c(1,0,-1,-1,1,0),3,2)
 y=c(-1,-1,1)
 #################################################################################
@@ -216,7 +218,6 @@ plot(m)
 #x <- as.matrix(x)
 
 
-
 rm(list=ls(all=TRUE))
 setwd("D:\\GitHub\\powerfamily")
 library(gcdnet)
@@ -225,14 +226,101 @@ y = FHT$y
 x = FHT$x
 # LASSO
 m <- gcdnet(x=FHT$x,y=FHT$y,
-            lambda = c(0.17,0.05,0.005),
-            lambda2=0.2,method="hhsvm")
+            lambda2=0,method="hhsvm",delta=as.double(2))
 plot(m, xvar="lambda")
 
-m = gcdnet(x=FHT$x,y=FHT$y)
+m = gcdnet(x=FHT$x,y=FHT$y,delta=2)
 print(predict(m,type="class",newx=FHT$x[2:5,]))
 
+delta = as.double(2)
+thr = 1e-04
+b0=m$b0
+mbeta=m$beta
+lambda=m$lambda
 
-# elastic net with lambda2 = 1
-m <- gcdnet(x=x,y=y,lambda2=0,method="hhsvm")
-plot(m, color=T)
+
+
+source("GCDpower.R")
+m1 <- gcdnetpower(x=FHT$x,y=FHT$y,
+                  #lambda=c(0.5,0.1),
+                  lambda2=0, delta=2,method="hhsvm")
+plot(m1, color=T)
+                                                             
+                                                             
+margin(m$b0, m$beta, FHT$y, FHT$x, delta, loss = c("hsvm") )
+KKT(m$b0, m$beta, FHT$y, FHT$x, m$lambda, thr, delta, loss = c("hsvm"))
+
+
+rm(list=ls(all=TRUE))
+setwd("D:\\GitHub\\powerfamily")
+library(gcdnet)
+data(FHT)
+m = gcdnet(x=FHT$x,y=FHT$y,delta=2,method=c("hhsvm"))
+#plot(m)
+source('auxiliary.R') # from package gglasso
+
+delta = as.double(2)
+thr = 0.001
+
+#pf = rep(1, ncol(m$beta))
+group = 1:ncol(m$beta)
+bs <- as.integer(as.numeric(table(group)))
+pf = sqrt(bs)
+KKT(m$b0, m$beta, FHT$y, FHT$x, m$lambda, 
+    pf, group, thr, delta, loss = c("hsvm")) 
+
+violate at b = 0 0.08996075 
+violate at b = 0 0.09184078 
+violate at b = 0 0.0936321 
+violate at b = 0 0.09339393 
+violate at b = 0 0.09288386 
+violate at b != 0 0.08959158 
+violate at b != 0 0.08551179 
+violate at b != 0 0.08162467 
+# of violations 0.08 
+[1] 0.08
+
+
+KKT1(m$b0, m$beta, FHT$y, FHT$x, m$lambda, 
+    thr, delta, loss = c("hsvm")) 
+
+
+
+
+
+
+source('auxiliary.R')# from package gglasso
+# load gglasso library
+library(gglasso)
+# load bardet data set
+data(bardet)
+# define group index
+group1 <- 1:100
+bs <- as.integer(as.numeric(table(group1)))
+pf1 = sqrt(bs)
+# fit group lasso penalized least squares
+m1 <- gglasso(x=bardet$x,y=bardet$y,group=group1,loss="ls")
+thr = 1e-04
+pf = rep(1, ncol(m1$beta))
+KKT(m1$b0, m1$beta, bardet$y, bardet$x, m1$lambda, 
+    pf1, group1, thr, delta, loss = c("ls")) 
+
+###############################################################################
+
+d
+
+
+data(promotergene)
+install.packages("DWD")
+library(DWD)
+gene <- kdwd(type~.,data=spam,C=100,scaled=TRUE,cross=1)
+gene@fitted
+
+x=spam[,2:58]
+
+
+rm(list=ls(all=TRUE))
+setwd("D:\\GitHub\\powerfamily")
+library(gcdnet)
+data(FHT)
+m = gcdnet(x=promotergene[,2:58],y=promotergene$Class,delta=2,method=c("hhsvm"))

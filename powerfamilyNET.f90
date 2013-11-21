@@ -396,7 +396,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                   EXIT
                END IF
             END DO
-            IF (vrg == 1) EXIT
+            IF (vrg == 1) EXIT 
             ctr = ctr + 1
             IF (ctr > maxit) THEN
                jerr = - l
