@@ -20,51 +20,113 @@ load("FHT.rda")
 m1 <- gcdnetpower(x=FHT$x,y=FHT$y,
                    #lambda=c(0.5,0.1),
                   lambda2=0, delta=0.01,method="hhsvm")
-pdf("solnpth_power.pdf",9,6)
+pdf("lsolnpth_power.pdf",9,6)
 plot(m1, color=T)
 dev.off()
 
 m_100 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=100,method="power")
-pdf("solnpth_power100.pdf",9,6)
+pdf("lsolnpth_power100.pdf",9,6)
 plot(m_100, color=T, main="q=100",xvar="lambda")
 dev.off()
 
 m_10 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=10,method="power")
-pdf("solnpth_power10.pdf",9,6)
+pdf("lsolnpth_power10.pdf",9,6)
 plot(m_10, color=T, main="q=10",xvar="lambda")
 dev.off()
 
 m_5 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=5,method="power")
-pdf("solnpth_power5.pdf",9,6)
+pdf("lsolnpth_power5.pdf",9,6)
 plot(m_5, color=T, main="q=5",xvar="lambda")
 dev.off()
 
 m_2 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=2,method="power")
-pdf("solnpth_power2.pdf",9,6)
+pdf("lsolnpth_power2.pdf",9,6)
 plot(m_2, color=T, main="q=2",xvar="lambda")
 dev.off()
 
 m_1 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=1,method="power")
-pdf("solnpth_power1.pdf",9,6)
+pdf("lsolnpth_power1.pdf",9,6)
 plot(m_1, color=T, main="q=1",xvar="lambda")
 dev.off()
 
+m_1_l_05 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0.5,qv=1,method="power")
+pdf("solnpth_power1_l05.pdf",9,6)
+plot(m_1_l_05 , color=T, main="q=1, lambda=0.5")
+dev.off()
+
+m_1_l_1 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=1,qv=1,method="power")
+pdf("solnpth_power1_l1.pdf",9,6)
+plot(m_1_l_1 , color=T, main="q=1, lambda=1")
+dev.off()
+
+
 m_05 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=0.5,method="power")
-pdf("solnpth_power05.pdf",9,6)
+pdf("lsolnpth_power05.pdf",9,6)
 plot(m_05, color=T, main="q=0.5",xvar="lambda")
 dev.off()
 
 
 m_01 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=0.1,method="power")
-pdf("solnpth_power01.pdf",9,6)
+pdf("lsolnpth_power01.pdf",9,6)
 plot(m_01, color=T, main="q=0.1",xvar="lambda")
 dev.off()
 
 
 m_001 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=0.01,method="power")
-pdf("solnpth_power001.pdf",9,6)
+pdf("lsolnpth_power001.pdf",9,6)
 plot(m_001, color=T, main="q=0.01",xvar="lambda")
 dev.off()
+
+
+
+
+
+
+
+
+m_100 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=100,method="hhsvm")
+pdf("hsolnpth_power100.pdf",9,6)
+plot(m_100, color=T, main="delta=100")
+dev.off()
+
+m_10 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=10,method="hhsvm")
+pdf("hsolnpth_power10.pdf",9,6)
+plot(m_10, color=T, main="delta=10")
+dev.off()
+
+m_5 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=5,method="hhsvm")
+pdf("hsolnpth_power5.pdf",9,6)
+plot(m_5, color=T, main="delta=5")
+dev.off()
+
+m_2 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=2,method="hhsvm")
+pdf("hsolnpth_power2.pdf",9,6)
+plot(m_2, color=T, main="delta=2")
+dev.off()
+
+m_1 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=1,method="hhsvm")
+pdf("hsolnpth_power1.pdf",9,6)
+plot(m_1, color=T, main="delta=1")
+dev.off()
+
+m_05 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=0.5,method="hhsvm")
+pdf("hsolnpth_power05.pdf",9,6)
+plot(m_05, color=T, main="delta=0.5")
+dev.off()
+
+
+m_01 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=0.1,method="hhsvm")
+pdf("hsolnpth_power01.pdf",9,6)
+plot(m_01, color=T, main="delta=0.1")
+dev.off()
+
+
+m_001 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=0.01,method="hhsvm")
+pdf("hsolnpth_power001.pdf",9,6)
+plot(m_001, color=T, main="delta=0.01")
+dev.off()
+
+
 
 
 m3 <- gcdnetpower(x=FHT$x,y=FHT$y,
@@ -200,13 +262,13 @@ for(i in 1:qv.length)
   print(i)
   m = gcdnetpower(x=train.x,y=train.y,
                #lambda=lambda.seq,
-               lambda2=0, delta=qv.seq[i], qv=qv.seq[i], method="power",nlambda=10)
+               lambda2=0, delta=qv.seq[i], qv=qv.seq[i], method="hhsvm",nlambda=100)
   for(j in 1:lambda.length)
   {
     pred=predict(m, lambda.seq[j],newx=test.x)
     l[i,j]=j
     misclassrate[i,j] = as.numeric(colSums(pred != test.y))/length(test.y)
-    nonzerobeta[i,j] = sum(coef(m, s=lambda.seq[j])!=0)-1
+    nonzerobeta[i,j] = sum(coef(m, s=lambda.seq[j])[-1,]!=0)
   }
 } 
 
@@ -224,4 +286,107 @@ m = gcdnetpower(x=train.x,y=train.y,
                 lambda2=0, delta=0.01, qv=10, method="hhsvm")
 plot(m, color=F)
 
+
+library(DWD)
+
+set.seed(123)
+index=sample.int(nobs.spam,300)
+dat = spam[index,]
+
+index = sample.int(300,300)
+folderind=rep(1:5,each=60)
+train.index = index[folderind!=5]
+test.index = index[folderind==5]
+train.x = dat[train.index,1:57]; train.y = dat$y[train.index]
+test.x = dat[test.index,1:57]; test.y = dat$y[test.index]
+
+
+i=6
+qv.seq=c(0.01,0.5,1,2,5,100)
+
+qv.seq=sort(qv.seq,T)
+qv.length=length(qv.seq)
+
+lambda.seq=c(0.1,0.15,0.2,0.3,0.5)
+lambda.length=length(lambda.seq)
+l = matrix(NA, qv.length, lambda.length)
+misclassrate = matrix(NA, qv.length, lambda.length)
+nonzerobeta = matrix(NA, qv.length, lambda.length)
+start1=Sys.time()
+for(i in 1:qv.length)
+{
+  
+  print(i)
+  m = gcdnetpower(x=train.x,y=train.y,
+                  #lambda=lambda.seq,
+                  lambda2=0, delta=qv.seq[i], qv=qv.seq[i], method="power",nlambda=100)
+  for(j in 1:lambda.length)
+  {
+    pred=predict(m, lambda.seq[j],newx=test.x)
+    l[i,j]=j
+    misclassrate[i,j] = as.numeric(colSums(pred != test.y))/length(test.y)
+    nonzerobeta[i,j] = sum(coef(m, s=lambda.seq[j])[-1,]!=0)
+  }
+} 
+
+a=cbind(c(NA,qv.seq),rbind(lambda.seq,misclassrate*60))
+b=cbind(c(NA,qv.seq),rbind(lambda.seq,nonzerobeta))
+stop1=Sys.time()
+difftime(stop1, start1, units="secs")
+
+powera=a
+powerb=b
+powerdtime = difftime(stop1, start1, units="secs")
+
+hhsvma = a
+hhsvmb = b
+hhsvmdtime = difftime(stop1, start1, units="secs")
+
+
+
+m = gcdnetpower(x=train.x,y=train.y,
+                #lambda=lambda.seq,
+                lambda2=0, delta=qv.seq[i], qv=qv.seq[i], method="power",nlambda=100)
+
+pdf('spam_q_100.pdf', 9, 6)
+plot(m)
+dev.off()
+
+m = gcdnetpower(x=train.x,y=train.y,
+                #lambda=lambda.seq,
+                lambda2=0, delta=qv.seq[i], qv=1, method="power",nlambda=100)
+
+pdf('spam_q_1.pdf', 9, 6)
+plot(m)
+dev.off()
+
+
+m = gcdnetpower(x=train.x,y=train.y,
+                #lambda=lambda.seq,
+                lambda2=1, delta=qv.seq[i], qv=1, method="power",nlambda=100)
+
+pdf('spampower_q_1_l_2.pdf', 9, 6)
+plot(m, color=T, main="q=1, lambda2=1")
+dev.off()
+coef(m)
+
+
+
+m1 = gcdnetpower(x=train.x,y=train.y,
+                #lambda=lambda.seq,
+                lambda2=0, delta=qv.seq[i], qv=100, method="power",nlambda=100)
+
+pdf('spampower_q_100.pdf', 9, 6)
+plot(m1, color=T, main="q=100")
+dev.off()
+
+
+
+m2 = gcdnetpower(x=train.x,y=train.y,
+                 #lambda=lambda.seq,
+                 lambda2=0, delta=0.01, qv=1, method="delta",nlambda=100)
+
+pdf('spamhhsvm_d_001.pdf', 9, 6)
+plot(m2, color=T, main="delta=0.01")
+dev.off()
 
