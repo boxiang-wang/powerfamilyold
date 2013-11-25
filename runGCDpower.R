@@ -352,21 +352,21 @@ pdf('spam_q_100.pdf', 9, 6)
 plot(m)
 dev.off()
 
-m = gcdnetpower(x=train.x,y=train.y,
+m00 = gcdnetpower(x=train.x,y=train.y,
                 #lambda=lambda.seq,
                 lambda2=0, delta=qv.seq[i], qv=1, method="power",nlambda=100)
 
-pdf('spam_q_1.pdf', 9, 6)
-plot(m)
+pdf('spampower_q_1.pdf', 9, 6)
+plot(m00, color=T, main="q=1")
 dev.off()
 
 
-m = gcdnetpower(x=train.x,y=train.y,
+m01 = gcdnetpower(x=train.x,y=train.y,
                 #lambda=lambda.seq,
                 lambda2=1, delta=qv.seq[i], qv=1, method="power",nlambda=100)
 
 pdf('spampower_q_1_l_2.pdf', 9, 6)
-plot(m, color=T, main="q=1, lambda2=1")
+plot(m01, color=T, main="q=1, lambda2=1")
 dev.off()
 coef(m)
 
@@ -384,7 +384,7 @@ dev.off()
 
 m2 = gcdnetpower(x=train.x,y=train.y,
                  #lambda=lambda.seq,
-                 lambda2=0, delta=0.01, qv=1, method="delta",nlambda=100)
+                 lambda2=0, delta=0.01, qv=1, method="hhsvm",nlambda=100)
 
 pdf('spamhhsvm_d_001.pdf', 9, 6)
 plot(m2, color=T, main="delta=0.01")
