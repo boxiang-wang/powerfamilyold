@@ -1,5 +1,3 @@
-
-
 rm(list=ls(all=TRUE))
 setwd("D:\\GitHub\\powerfamily")
 
@@ -7,7 +5,7 @@ dhsvm <- function(v, delta) {
   r <- v[1]
   if (r > 1) 
     dl <- 0 else if (r <= (1 - delta)) 
-      dl <- -1 else dl <- (r - 1)/delta
+      dl <- (1 - r - delta/2) else dl <- (r - 1)^2/delta
   dl
 }
 
@@ -90,4 +88,4 @@ plot(m, color=T)
 
 
 margin(m$b0, m$beta, FHT$y, FHT$x, delta, loss = c("hsvm") )
-KKT(m$b0, m$beta, FHT$y, FHT$x, m$lambda, thr, delta, loss = c("hsvm"))
+KKT1(m$b0, m$beta, FHT$y, FHT$x, m$lambda, thr, delta, loss = c("hsvm"))
