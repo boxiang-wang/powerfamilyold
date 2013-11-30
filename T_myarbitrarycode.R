@@ -131,6 +131,8 @@ difftime(stop0, start0, units="secs")
 start1 = Sys.time()
 #################################################################################
 # call Fortran core
+delta=0.25
+delta <- as.double(delta)
 fit <- .Fortran("hsvmlassoNET", delta, lam2, nobs, nvars, 
                 as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
                 flmin, ulam, eps, isd, maxit, nalam = integer(1), b0 = double(nlam), 
@@ -155,7 +157,7 @@ difftime(stop1, start1, units="secs")
 
 start2 = Sys.time()
 #################################################################################
-qv = .1
+qv = 1
 qv = as.double(qv)
 fit1 <- .Fortran("powerfamilyNET", qv, lam2, nobs, nvars, 
                  as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
