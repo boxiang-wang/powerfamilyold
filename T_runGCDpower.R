@@ -3,17 +3,25 @@ rm(list=ls(all=TRUE))
 setwd("D:\\GitHub\\powerfamily")
 require(Matrix)
 
-source("GCDpower.R")
-source("utilities.R")
-source("p.GCDpower.R")
-source("tools.GCDpower.R")
-source("coef.GCDpower.R")
+# Source files with tool functions.
+source("O_utilities.R")
 
+# Main program
+source("M_GCDpower.R")
 
-dyn.load("powerfamilyNET.dll")
-dyn.load("hsvmlassoNET.dll")
+# Prediction, plot
+source("M_p.GCDpower.R")
+# KKT checking, CV
+source("M_tools.GCDpower.R")
+# coefficients
+source("M_coef.GCDpower.R")
 
-load("FHT.rda")
+# Two FORTRAN subroutines.
+dyn.load("M_powerfamilyNET.dll")
+dyn.load("O_hsvmlassoNET.dll")
+
+# Data files
+load("D_FHT.rda")
 
 
 # LASSO
