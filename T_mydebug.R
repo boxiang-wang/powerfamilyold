@@ -1,19 +1,16 @@
-
 rm(list=ls(all=TRUE))
 setwd("D:\\GitHub\\powerfamily")
 
-#load("FHT.rda")
-#y = FHT$y
-#x = FHT$x
-#y <- drop(y)
-#x <- as.matrix(x)
+# Set the data set
+load("D_FHT.rda")
+y = FHT$y
+x = FHT$x
+y <- drop(y)
+x <- as.matrix(x)
 
 #x = matrix(c(1,0,-1,-1,1,0),3,2)
 #y=c(-1,-1,1)
 
-load("FHT.rda")
-y = FHT$y
-x = FHT$x
 
 np <- dim(x)
 nobs <- as.integer(np[1])
@@ -26,7 +23,6 @@ lambda = NULL
 lambda2 = 0
 pf = rep(1, nvars)
 pf2 = rep(1, nvars)
-#exclude, 
 dfmax = nvars + 1
 pmax = min(dfmax * 1.2, nvars)
 standardize = TRUE
