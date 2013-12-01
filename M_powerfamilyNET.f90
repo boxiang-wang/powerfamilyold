@@ -102,7 +102,7 @@ SUBROUTINE powerfamilyNET (q, lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, &
       DOUBLE PRECISION :: lam2
       DOUBLE PRECISION :: flmin
       DOUBLE PRECISION :: eps
-      DOUBLE PRECISION :: q
+        DOUBLE PRECISION :: q
       DOUBLE PRECISION :: x (nobs, nvars)
       DOUBLE PRECISION :: y (nobs)
       DOUBLE PRECISION :: pf (nvars)
@@ -166,6 +166,7 @@ SUBROUTINE powerfamilyNET (q, lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, &
       DEALLOCATE (ju, xmean, xnorm, maj)
       RETURN
 END SUBROUTINE powerfamilyNET !!!
+
 ! --------------------------------------------------
 SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
 & pf, pf2, dfmax, pmax, nlam, flmin, ulam, eps, maxit, nalam, b0, beta, m, &
@@ -192,7 +193,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       DOUBLE PRECISION :: capm
       DOUBLE PRECISION :: lam2
       DOUBLE PRECISION :: eps
-      DOUBLE PRECISION :: q
+        DOUBLE PRECISION :: q
       DOUBLE PRECISION :: x (nobs, nvars)
       DOUBLE PRECISION :: y (nobs)
       DOUBLE PRECISION :: pf (nvars)
@@ -225,6 +226,9 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       INTEGER :: ni
       INTEGER :: me
       INTEGER, DIMENSION (:), ALLOCATABLE :: mm
+	  
+      DOUBLE PRECISION :: decib
+	  DOUBLE PRECISION :: fdr
 ! - - - begin - - -
 ! - - - allocate variables - - -
       ALLOCATE (b(0:nvars), STAT=jerr)
@@ -245,11 +249,20 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       ni = npass
       mnl = Min (mnlam, nlam)
       capm = 2.0D0 * (q + 1.0D0) ** 2.0D0 / q !!!
+	  CALL DBLEPR("capm", -1, capm, 1)
       maj = maj * capm !!!
       IF (flmin < 1.0D0) THEN
          flmin = Max (mfl, flmin)
          alf = flmin ** (1.0D0/(nlam-1.0D0))
       END IF
+	  ! decision boundary of loss function
+	  
+	     decib = q / (q + 1.0D0)
+	     fdr = - decib ** (q + 1.0D0)
+	  	  CALL DBLEPR("decib", -1, decib, 1)
+		  	CALL DBLEPR("fdr", -1, fdr, 1)
+
+	  
 ! --------- lambda loop ----------------------------
       DO l = 1, nlam
          IF (flmin >= 1.0D0) THEN
@@ -262,9 +275,8 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
             ELSE IF (l == 2) THEN
                al = 0.0D0
                DO i = 1, nobs !!!!!!!!!!!!!!!!!!!!!!
-                  IF (r(i) > (q / (q + 1.0D0))) THEN
-                     dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * &
-&(q / (q + 1.0D0)) ** (q + 1.0D0)
+                  IF (r(i) > decib) THEN
+                     dl (i) = r(i) ** (- q - 1.0D0) * fdr
                   ELSE
                      dl (i) = -1.0D0
                   END IF
@@ -294,11 +306,10 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                      oldb = b (k)
                      u = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                     IF (r(i) > (q / (q + 1.0D0))) THEN
-                           dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * &
-&(q / (q + 1.0D0)) ** (q + 1.0D0)
-                           ELSE
-                              dl (i) = -1.0D0
+                        IF (r(i) > decib) THEN
+                           dl (i) = r(i) ** (- q - 1.0D0) * fdr
+                        ELSE
+                           dl (i) = -1.0D0
                         END IF
                         u = u + dl (i) * y (i) * x (i, k)
                      END DO !!!!!!!!!!!!!!!!!!!!!!
@@ -326,9 +337,8 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                IF (ni > pmax) EXIT
                d = 0.0D0
                DO i = 1, nobs
-                  IF (r(i) > (q / (q + 1.0D0))) THEN
-                     dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) *&
-& (q / (q + 1.0D0)) ** (q + 1.0D0)
+                     IF (r(i) > decib) THEN
+                        dl (i) = r(i) ** (- q - 1.0D0) * fdr
                      ELSE
                         dl (i) = -1.0D0
                  END IF
@@ -350,11 +360,10 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                      oldb = b (k)
                      u = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > (q / (q + 1.0D0))) THEN
-                           dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) * &
-&(q / (q + 1.0D0)) ** (q + 1.0D0)
-                           ELSE
-                              dl (i) = -1.0D0
+                        IF (r(i) > decib) THEN
+                           dl (i) = r(i) ** (- q - 1.0D0) * fdr
+                        ELSE
+                           dl (i) = -1.0D0
                         END IF
                         u = u + dl (i) * y (i) * x (i, k)
                      END DO !!!!!!!!!!!!!!!!!!!!!!
@@ -374,11 +383,10 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                   END DO
                   d = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
-                        IF (r(i) > (q / (q + 1.0D0))) THEN
-                           dl (i) = - 1.0D0 / (r(i) ** (q + 1.0D0)) *&
-& (q / (q + 1.0D0)) ** (q + 1.0D0)
-                           ELSE
-                              dl (i) = -1.0D0
+                        IF (r(i) > decib) THEN
+                           dl (i) = r(i) ** (- q - 1.0D0) * fdr
+                        ELSE
+                           dl (i) = -1.0D0
                         END IF
                      d = d + dl (i) * y (i)
                   END DO !!!!!!!!!!!!!!!!!!!!!!
