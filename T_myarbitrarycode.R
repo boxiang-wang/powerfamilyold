@@ -82,6 +82,8 @@ source("O_plot.gcdnet.R")
 source("O_utilities.R")
 require(Matrix)
 
+
+
 # About FORTRAN subroutines
 dyn.unload("O_hsvmlassoNET.dll")
 dyn.unload("O_sqsvmlassoNET.dll")
@@ -90,13 +92,13 @@ dyn.unload("M_powerfamilyNET.dll")
 ## cmd
 del O_hsvmlassoNET.dll O_hsvmlassoNET.o
 Rcmd SHLIB O_hsvmlassoNET.f90 O_auxiliary.f90 -o O_hsvmlassoNET.dll
-<<<<<<< HEAD
+
 
 del O_sqsvmlassoNET.dll O_sqsvmlassoNET.o
 Rcmd SHLIB O_sqsvmlassoNET.f90 O_auxiliary.f90 -o O_sqsvmlassoNET.dll
 
-del M_powerfamilyNET.dll M_powerfamilyNET.o
-Rcmd SHLIB M_powerfamilyNET.f90 O_auxiliary.f90 -o M_powerfamilyNET.dll
+shell("del M_powerfamilyNET.dll M_powerfamilyNET.o")
+shell("Rcmd SHLIB M_powerfamilyNET.f90 O_auxiliary.f90 -o M_powerfamilyNET.dll")
 
 dyn.load("O_hsvmlassoNET.dll")
 dyn.load("O_sqsvmlassoNET.dll")
@@ -129,25 +131,8 @@ plot.gcdnet(fit1)
 
 stop2 = Sys.time()
 difftime(stop2, start2, units="secs")
-=======
-
-del O_sqsvmlassoNET.dll O_sqsvmlassoNET.o
-Rcmd SHLIB O_sqsvmlassoNET.f90 O_auxiliary.f90 -o O_sqsvmlassoNET.dll
-
-del M_powerfamilyNET.dll M_powerfamilyNET.o
-Rcmd SHLIB M_powerfamilyNET.f90 O_auxiliary.f90 -o M_powerfamilyNET.dll
->>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
-
-dyn.load("O_hsvmlassoNET.dll")
-dyn.load("O_sqsvmlassoNET.dll")
-dyn.load("M_powerfamilyNET.dll")
 
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
 start0 = Sys.time()
 #################################################################################
 # call Fortran core
@@ -177,15 +162,6 @@ difftime(stop0, start0, units="secs")
 start1 = Sys.time()
 #################################################################################
 # call Fortran core
-<<<<<<< HEAD
-<<<<<<< HEAD
-delta=2/9
-=======
-delta=0.25
->>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
-=======
-delta=0.25
->>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
 delta <- as.double(delta)
 fit <- .Fortran("hsvmlassoNET", delta, lam2, nobs, nvars, 
                 as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
@@ -207,40 +183,3 @@ class(fit) <- c("gcdnet", class(fit))
 plot.gcdnet(fit)
 stop1 = Sys.time()
 difftime(stop1, start1, units="secs")
-
-<<<<<<< HEAD
-=======
-
-start2 = Sys.time()
-#################################################################################
-qv = 1
-qv = as.double(qv)
-fit1 <- .Fortran("powerfamilyNET", qv, lam2, nobs, nvars, 
-                 as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
-                 flmin, ulam, eps, isd, maxit, nalam = integer(1), b0 = double(nlam), 
-                 beta = double(pmax * nlam), ibeta = integer(pmax), nbeta = integer(nlam), 
-                 alam = double(nlam), npass = integer(1), jerr = integer(1))
-
-#################################################################################
-# output
-fit1 <- getoutput(fit1, maxit, pmax, nvars, vnames)
-fit1 <- c(fit1, list(npasses = fit1$npass, jerr = fit1$jerr))
-class(fit1) <- c("powerfamilyNET")
-if (is.null(lambda)) 
-  fit1$lambda <- lamfix(fit1$lambda)
-#fit$call <- this.call
-#################################################################################
-class(fit1) <- c("gcdnet", class(fit1))
-#fit1
-
-plot.gcdnet(fit1)
-
-stop2 = Sys.time()
-difftime(stop2, start2, units="secs")
-
-
-
-<<<<<<< HEAD
->>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
-=======
->>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50

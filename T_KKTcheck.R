@@ -106,7 +106,8 @@ KKT1(m$b0, m$beta, FHT$y, FHT$x, m$lambda, thr=1e-03, delta=2, loss = c("hsvm"))
 #################################################################################
 ############ checking KKT conditions for power family ################
 #################################################################################
-hsvm <- function(v, delta) {
+hsvm <- function(v, varlist) {
+  delta = varlist$delta
   r <- v[1]
   if (r > 1) 
     dl <- 0 else if (r <= (1 - delta)) 
@@ -114,7 +115,8 @@ hsvm <- function(v, delta) {
   dl
 }
 
-dhsvm <- function(v, delta) {
+dhsvm <- function(v, varlist) {
+  delta = varlist$delta
   r <- v[1]
   if (r > 1) 
     dl <- 0 else if (r <= (1 - delta)) 
@@ -122,21 +124,23 @@ dhsvm <- function(v, delta) {
   dl
 }
 
-power <- function(v, qv) {
+power <- function(v, varlist) {
+  qv = varlist$qv
   decib = qv / (qv + 1)
   r <- v[1]
   dl = ifelse(r > decib, r ^ (-qv) * (qv ^ qv) / ((qv + 1) ^ (qv + 1)), 1 - r)
   dl
 }
 
-dpower <- function(v, qv) {
+dpower <- function(v, varlist) {
+  qv = varlist$qv
   decib = qv / (qv + 1)
   r <- v[1]
   dl = ifelse(r > decib, (-1) * r ^ (-qv - 1) * decib ^ (qv + 1), -1)
 }
 
 
-margin <- function(b0, beta, y, x, delta, loss = c("hsvm", "power")) {
+margin <- function(b0, beta, y, x, loss = c("hsvm", "power"), delta=2, qv=2) {
   loss <- match.arg(loss)
   nobs <- nrow(x)
   b0MAT <- matrix(rep(b0, nobs), nrow = nobs, byrow = TRUE)
@@ -145,7 +149,8 @@ margin <- function(b0, beta, y, x, delta, loss = c("hsvm", "power")) {
     r <- y * link
   } else r <- y - link
   fun <- paste("d", loss, sep = "")
-  dMat <- apply(r, c(1, 2), eval(fun), delta = delta) #dMat1
+  varlist = list(delta=delta, qv=qv)
+  dMat <- apply(r, c(1, 2), eval(fun), varlist) #dMat1
   if (loss %in% c("hsvm", "power")) {
     yxdMat <- t(x) %*% (dMat * y)/nobs
   } else yxdMat <- t(x) %*% dMat/nobs
@@ -156,9 +161,10 @@ margin <- function(b0, beta, y, x, delta, loss = c("hsvm", "power")) {
 # dim(dMat) = n by l
 # dim(yxdMat) = p by l
 
-KKT1 = function(b0, beta, y, x, lambda, lambda2, thr, delta, loss = c("hsvm")) {
+KKT1 = function(b0, beta, y, x, lambda, lambda2, thr, 
+                loss = c("hsvm", "power"), delta=2, qv=2) {
   loss = match.arg(loss)
-  dl = margin(b0, beta, y, x, delta, loss)
+  dl = margin(b0, beta, y, x, loss=loss, delta=delta, qv=qv)
   ctr = 0
   for (l in 1:length(lambda)) {
     p = nrow(beta)
@@ -173,7 +179,7 @@ KKT1 = function(b0, beta, y, x, lambda, lambda2, thr, delta, loss = c("hsvm")) {
           ctr <- ctr + 1
         }
       } else{
-        AA = dl[j,l] + lambda[l] * sign(beta[j,l]) * lambda2 * beta[j,l]
+        AA = dl[j,l] + lambda[l] * sign(beta[j,l]) + lambda2 * beta[j,l]
         if (abs(sum(AA)) >= thr)
         {
           cat("violate at b != 0", abs(sum(AA)), "\n")
@@ -189,7 +195,7 @@ KKT1 = function(b0, beta, y, x, lambda, lambda2, thr, delta, loss = c("hsvm")) {
 
 
 
-library(gcdnet)
+#library(gcdnet)
 load("D_FHT.rda")
 y = FHT$y
 x = FHT$x
@@ -197,16 +203,30 @@ x = FHT$x
 #x = matrix(c(1,0,-1,-1,1,0),3,2)
 #y = c(-1,-1,1)
 
-#source("GCDpower.R")
-m <- gcdnet(x=FHT$x,y=FHT$y,
+# Source files with tool functions.
+source("O_utilities.R")
+
+# Main program
+source("M_GCDpower.R")
+
+# Two FORTRAN subroutines.
+dyn.load("M_powerfamilyNET.dll")
+dyn.load("O_hsvmlassoNET.dll")
+
+
+m <- gcdnetpower(x=FHT$x,y=FHT$y,
             #lambda=c(0.1,0.01),
-            lambda2=1, delta=2,method="hhsvm",eps=1e-10, standardize=F)
+            lambda2=1, qv=2, method="power",eps=1e-10, standardize=F)
 plot(m, color=T)
 
 b0=m$b0
 beta=m$beta
 lambda=m$lambda
 
+# KKT1 = function(b0, beta, y, x, lambda, lambda2, thr, delta, loss = c("hsvm"))
+# margin(m$b0, m$beta, FHT$y, FHT$x, delta=2, loss = c("power") )
+KKT1(m$b0, m$beta, FHT$y, FHT$x, m$lambda, lambda2=1, thr=1e-03, qv=2, loss = c("power"))
 
-margin(m$b0, m$beta, FHT$y, FHT$x, delta=2, loss = c("hsvm") )
-KKT1(m$b0, m$beta, FHT$y, FHT$x, m$lambda,  ,thr=1e-03, delta=2, loss = c("hsvm"))
+
+
+

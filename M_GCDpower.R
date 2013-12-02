@@ -21,7 +21,7 @@ powerfamilypath <- function(x, y, nlam, flmin, ulam, isd,
   qv <- as.double(qv)
   #################################################################################
   # call Fortran core
-  fit <- .Fortran("M_powerfamilyNET", qv, lam2, nobs, nvars, 
+  fit <- .Fortran("powerfamilyNET", qv, lam2, nobs, nvars, 
                    as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
                    flmin, ulam, eps, isd, maxit, nalam = integer(1), b0 = double(nlam), 
                    beta = double(pmax * nlam), ibeta = integer(pmax), nbeta = integer(nlam), 
@@ -49,7 +49,7 @@ hsvmpath <- function(x, y, nlam, flmin, ulam, isd,
   delta <- as.double(delta)
   #################################################################################
   # call Fortran core
-  fit <- .Fortran("O_hsvmlassoNET", delta, lam2, nobs, nvars, 
+  fit <- .Fortran("hsvmlassoNET", delta, lam2, nobs, nvars, 
                   as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
                   flmin, ulam, eps, isd, maxit, nalam = integer(1), b0 = double(nlam), 
                   beta = double(pmax * nlam), ibeta = integer(pmax), nbeta = integer(nlam), 
