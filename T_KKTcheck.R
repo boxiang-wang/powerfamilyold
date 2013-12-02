@@ -91,7 +91,7 @@ thr = 1e-04
 #source("GCDpower.R")
 m <- gcdnet(x=FHT$x,y=FHT$y,
             #lambda=c(0.1,0.01),
-            lambda2=0, delta=2,method="hhsvm",eps=1e-10, standardize=F)
+            lambda2=0, delta=2,method="hhsvm",eps=1e-6, standardize=F)
 plot(m, color=T)
 
 b0=m$b0
@@ -166,6 +166,7 @@ KKT1 = function(b0, beta, y, x, lambda, lambda2, thr,
   loss = match.arg(loss)
   dl = margin(b0, beta, y, x, loss=loss, delta=delta, qv=qv)
   ctr = 0
+  ccounts = 0
   for (l in 1:length(lambda)) {
     p = nrow(beta)
     for(j in 1:p)
@@ -173,6 +174,7 @@ KKT1 = function(b0, beta, y, x, lambda, lambda2, thr,
       if(beta[j,l]==0)
       {
         BB = abs(dl[j,l]) - lambda[l]
+        ccounts = ccounts + 1
         if (BB > thr) 
         {
           cat("violate at b = 0", BB, "\n")
@@ -180,6 +182,7 @@ KKT1 = function(b0, beta, y, x, lambda, lambda2, thr,
         }
       } else{
         AA = dl[j,l] + lambda[l] * sign(beta[j,l]) + lambda2 * beta[j,l]
+        ccounts = ccounts + 1
         if (abs(sum(AA)) >= thr)
         {
           cat("violate at b != 0", abs(sum(AA)), "\n")
@@ -190,6 +193,7 @@ KKT1 = function(b0, beta, y, x, lambda, lambda2, thr,
     }
   }
   cat("# of violations", ctr/length(lambda), "\n")
+  cat("% of violations", ctr/ccounts*100, "%", "\n")
   return(ctr/length(lambda))
 } 
 
@@ -214,6 +218,7 @@ dyn.load("M_powerfamilyNET.dll")
 dyn.load("O_hsvmlassoNET.dll")
 
 
+
 m <- gcdnetpower(x=FHT$x,y=FHT$y,
             #lambda=c(0.1,0.01),
             lambda2=1, qv=2, method="power",eps=1e-10, standardize=F)
@@ -229,4 +234,29 @@ KKT1(m$b0, m$beta, FHT$y, FHT$x, m$lambda, lambda2=1, thr=1e-03, qv=2, loss = c(
 
 
 
+#################################################################################
+############ for the use of source ################
+#################################################################################
+rm(list=ls(all=TRUE))
+setwd("D:\\GitHub\\powerfamily")
+
+# Source files with tool functions.
+source("O_utilities.R")
+# Main program
+source("M_GCDpower.R")
+# Source file of KKT
+source("U_KKTcheckings.R")
+# FORTRAN subroutines.
+dyn.load("M_powerfamilyNET.dll")
+# Source file of data generator
+source("M_FHTgen.R")
+FHT = FHTgen(n=1000, p=500, rho=0.5)
+
+
+dat = FHT
+m = gcdnetpower(x=dat$x, y=dat$y,
+                 lambda2=1.5, qv=2, method="power",eps=1e-8, standardize=F)
+
+KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=1.5, thr=1e-03, 
+                  qv=2, loss = c("power"))
 
