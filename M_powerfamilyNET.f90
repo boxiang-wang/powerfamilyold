@@ -102,7 +102,7 @@ SUBROUTINE powerfamilyNET (q, lam2, nobs, nvars, x, y, jd, pf, pf2, dfmax, &
       DOUBLE PRECISION :: lam2
       DOUBLE PRECISION :: flmin
       DOUBLE PRECISION :: eps
-        DOUBLE PRECISION :: q
+      DOUBLE PRECISION :: q
       DOUBLE PRECISION :: x (nobs, nvars)
       DOUBLE PRECISION :: y (nobs)
       DOUBLE PRECISION :: pf (nvars)
@@ -193,7 +193,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       DOUBLE PRECISION :: capm
       DOUBLE PRECISION :: lam2
       DOUBLE PRECISION :: eps
-        DOUBLE PRECISION :: q
+      DOUBLE PRECISION :: q
       DOUBLE PRECISION :: x (nobs, nvars)
       DOUBLE PRECISION :: y (nobs)
       DOUBLE PRECISION :: pf (nvars)
@@ -249,7 +249,6 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
       ni = npass
       mnl = Min (mnlam, nlam)
       capm = 2.0D0 * (q + 1.0D0) ** 2.0D0 / q !!!
-	  CALL DBLEPR("capm", -1, capm, 1)
       maj = maj * capm !!!
       IF (flmin < 1.0D0) THEN
          flmin = Max (mfl, flmin)
@@ -259,10 +258,9 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
 	  
 	     decib = q / (q + 1.0D0)
 	     fdr = - decib ** (q + 1.0D0)
-	  	  CALL DBLEPR("decib", -1, decib, 1)
-		  	CALL DBLEPR("fdr", -1, fdr, 1)
-
-	  
+	  IF ( Abs(Nint(q) - q) < eps) THEN
+	     q = INT (q)
+	  END IF
 ! --------- lambda loop ----------------------------
       DO l = 1, nlam
          IF (flmin >= 1.0D0) THEN
@@ -276,7 +274,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                al = 0.0D0
                DO i = 1, nobs !!!!!!!!!!!!!!!!!!!!!!
                   IF (r(i) > decib) THEN
-                     dl (i) = r(i) ** (- q - 1.0D0) * fdr
+                     dl (i) = r(i) ** (- q - 1) * fdr
                   ELSE
                      dl (i) = -1.0D0
                   END IF
@@ -307,7 +305,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                      u = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
                         IF (r(i) > decib) THEN
-                           dl (i) = r(i) ** (- q - 1.0D0) * fdr
+                           dl (i) = r(i) ** (- q - 1) * fdr
                         ELSE
                            dl (i) = -1.0D0
                         END IF
@@ -338,7 +336,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                d = 0.0D0
                DO i = 1, nobs
                      IF (r(i) > decib) THEN
-                        dl (i) = r(i) ** (- q - 1.0D0) * fdr
+                        dl (i) = r(i) ** (- q - 1) * fdr
                      ELSE
                         dl (i) = -1.0D0
                  END IF
@@ -361,7 +359,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                      u = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
                         IF (r(i) > decib) THEN
-                           dl (i) = r(i) ** (- q - 1.0D0) * fdr
+                           dl (i) = r(i) ** (- q - 1) * fdr
                         ELSE
                            dl (i) = -1.0D0
                         END IF
@@ -384,7 +382,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
                   d = 0.0D0
                      DO i = 1, nobs   !!!!!!!!!!!!!!!!!!!!!!
                         IF (r(i) > decib) THEN
-                           dl (i) = r(i) ** (- q - 1.0D0) * fdr
+                           dl (i) = r(i) ** (- q - 1) * fdr
                         ELSE
                            dl (i) = -1.0D0
                         END IF
@@ -431,6 +429,7 @@ SUBROUTINE powerfamilyNETpath (q, lam2, maj, nobs, nvars, x, y, ju, &
          me = count (beta(1:ni, l) /= 0.0D0)
          IF (me > dfmax) EXIT
       END DO
+	  q = DBLE (q)
       DEALLOCATE (b, oldbeta, r, mm)
       RETURN
 END SUBROUTINE powerfamilyNETpath !!!

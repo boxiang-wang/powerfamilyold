@@ -90,6 +90,7 @@ dyn.unload("M_powerfamilyNET.dll")
 ## cmd
 del O_hsvmlassoNET.dll O_hsvmlassoNET.o
 Rcmd SHLIB O_hsvmlassoNET.f90 O_auxiliary.f90 -o O_hsvmlassoNET.dll
+<<<<<<< HEAD
 
 del O_sqsvmlassoNET.dll O_sqsvmlassoNET.o
 Rcmd SHLIB O_sqsvmlassoNET.f90 O_auxiliary.f90 -o O_sqsvmlassoNET.dll
@@ -128,11 +129,25 @@ plot.gcdnet(fit1)
 
 stop2 = Sys.time()
 difftime(stop2, start2, units="secs")
+=======
+
+del O_sqsvmlassoNET.dll O_sqsvmlassoNET.o
+Rcmd SHLIB O_sqsvmlassoNET.f90 O_auxiliary.f90 -o O_sqsvmlassoNET.dll
+
+del M_powerfamilyNET.dll M_powerfamilyNET.o
+Rcmd SHLIB M_powerfamilyNET.f90 O_auxiliary.f90 -o M_powerfamilyNET.dll
+>>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
+
+dyn.load("O_hsvmlassoNET.dll")
+dyn.load("O_sqsvmlassoNET.dll")
+dyn.load("M_powerfamilyNET.dll")
 
 
+<<<<<<< HEAD
 
 
-
+=======
+>>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
 start0 = Sys.time()
 #################################################################################
 # call Fortran core
@@ -163,7 +178,11 @@ start1 = Sys.time()
 #################################################################################
 # call Fortran core
 <<<<<<< HEAD
+<<<<<<< HEAD
 delta=2/9
+=======
+delta=0.25
+>>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
 =======
 delta=0.25
 >>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
@@ -221,4 +240,7 @@ difftime(stop2, start2, units="secs")
 
 
 
+<<<<<<< HEAD
+>>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
+=======
 >>>>>>> 6bc5bcbccaffcfa8f9d39f034e5a5733d8495c50
