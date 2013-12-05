@@ -230,7 +230,7 @@ lambda=m$lambda
 
 # KKT1 = function(b0, beta, y, x, lambda, lambda2, thr, delta, loss = c("hsvm"))
 # margin(m$b0, m$beta, FHT$y, FHT$x, delta=2, loss = c("power") )
-KKT1(m$b0, m$beta, FHT$y, FHT$x, m$lambda, lambda2=1, thr=1e-03, qv=2, loss = c("power"))
+KKT(m$b0, m$beta, FHT$y, FHT$x, m$lambda, lambda2=1, thr=1e-03, qv=2, loss = c("power"))
 
 
 
@@ -240,6 +240,7 @@ KKT1(m$b0, m$beta, FHT$y, FHT$x, m$lambda, lambda2=1, thr=1e-03, qv=2, loss = c(
 rm(list=ls(all=TRUE))
 setwd("D:\\GitHub\\powerfamily")
 
+require(Matrix)
 # Source files with tool functions.
 source("O_utilities.R")
 # Main program
@@ -248,15 +249,87 @@ source("M_GCDpower.R")
 source("U_KKTcheckings.R")
 # FORTRAN subroutines.
 dyn.load("M_powerfamilyNET.dll")
+dyn.load("M_powerfamilyintNET.dll")
 # Source file of data generator
 source("M_FHTgen.R")
-FHT = FHTgen(n=1000, p=500, rho=0.5)
+
+FHT = FHTgen(n=100, p=5000, rho=0.5)
 
 
 dat = FHT
-m = gcdnetpower(x=dat$x, y=dat$y,
-                 lambda2=1.5, qv=2, method="power",eps=1e-8, standardize=F)
 
-KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=1.5, thr=1e-03, 
-                  qv=2, loss = c("power"))
+
+m = gcdnetpower(x=dat$x, y=dat$y,
+                 lambda2=0.01, qv=2, method="power",eps=1e-7, standardize=F)
+
+
+KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=0.01, thr=1e-5, 
+                  qv=2, loss = c("power"), print.out=F)
+
+#################################################################################
+############ construct KKT tables ################
+#################################################################################
+
+set.seed(1234)
+FHT = FHTgen(n=100, p=5000, rho=0.8)
+dat = FHT
+
+start1 = Sys.time()
+KKTtb(dat, lambda2=0, qv=0.5, nm="n100p5Kr08l20q05")
+stop1 = Sys.time() 
+difftime(stop1, start1, units="secs")
+
+start1 = Sys.time()
+KKTtb(dat, lambda2=1, qv=0.5, nm="n100p5Kr08l21q05")
+stop1 = Sys.time()
+difftime(stop1, start1, units="secs")
+
+start1 = Sys.time()
+KKTtb(dat, lambda2=0, qv=1, nm="n100p5Kr08l20q1")
+stop1 = Sys.time()
+difftime(stop1, start1, units="secs")
+
+start1 = Sys.time()
+KKTtb(dat, lambda2=1, qv=1, nm="n100p5Kr08l21q1")
+stop1 = Sys.time()
+difftime(stop1, start1, units="secs")
+
+start1 = Sys.time()
+KKTtb(dat, lambda2=0, qv=2, nm="n100p5Kr08l20q2")
+stop1 = Sys.time()
+difftime(stop1, start1, units="secs")
+
+start1 = Sys.time()
+KKTtb(dat, lambda2=1, qv=2, nm="n100p5Kr08l21q2")
+stop1 = Sys.time()
+difftime(stop1, start1, units="secs")
+
+#shell("shutdown -s -f -t 1")
+
+file.loc = "D:\\GitHub\\powerfamily\\Outputs\\KKTrda\\"
+nm="n100p5Kr08l20q05"
+load(paste(file.loc, nm, ".rda", sep=""))
+
+p1=perct.tb
+p2=perct.tb
+xtable(cbind(p1,p2))
+
+
+set.seed(1234)
+FHT = FHTgen(n=100, p=1000, rho=0.8)
+dat = FHT
+m <- gcdnetpower(x=dat$x,y=dat$y,
+                 #lambda=c(0.1,0.01),
+                 lambda2=1, qv=2, method="power",eps=1e-4, standardize=F)
+KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=1, thr=10^(-5), 
+    qv=2, loss = c("power"), print.out=F)
+#KKTperctg(dat, lambda2=1, qv=2, eps=10, thr=4)
+# of checkings is 500000.
+# of violations for zero beta is 7695.
+% of violations for zero beta is 1.768978%.
+# of violations for non-zero beta is 64894.
+% of violations for non-zero beta is 99.83232%.
+# of total violations is 72589.
+% of total violations is 14.5178%.
+[1] 14.5178
 
