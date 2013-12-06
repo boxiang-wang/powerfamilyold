@@ -323,13 +323,5 @@ m <- gcdnetpower(x=dat$x,y=dat$y,
                  lambda2=1, qv=2, method="power",eps=1e-4, standardize=F)
 KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=1, thr=10^(-5), 
     qv=2, loss = c("power"), print.out=F)
-#KKTperctg(dat, lambda2=1, qv=2, eps=10, thr=4)
-# of checkings is 500000.
-# of violations for zero beta is 7695.
-% of violations for zero beta is 1.768978%.
-# of violations for non-zero beta is 64894.
-% of violations for non-zero beta is 99.83232%.
-# of total violations is 72589.
-% of total violations is 14.5178%.
-[1] 14.5178
+
 
