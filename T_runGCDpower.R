@@ -15,6 +15,8 @@ source("M_p.GCDpower.R")
 source("M_tools.GCDpower.R")
 # coefficients
 source("M_coef.GCDpower.R")
+# KKT
+source("U_KKTcheckings.R")
 
 # Two FORTRAN subroutines.
 shell("del M_powerfamilyNET.dll M_powerfamilyNET.o")
@@ -25,7 +27,6 @@ shell("Rcmd SHLIB M_powerfamilyintNET.f90 O_auxiliary.f90 -o M_powerfamilyintNET
 
 dyn.load("O_hsvmlassoNET.dll")
 dyn.load("O_sqsvmlassoNET.dll")
-dyn.load("M_powerfamilyintNET.dll")
 dyn.load("M_powerfamilyNET.dll")
 
 
@@ -33,15 +34,16 @@ dyn.load("M_powerfamilyNET.dll")
 load("D_FHT.rda")
 
 
+dat=FHT
 
 start1 = Sys.time()
 m = gcdnetpower(x=dat$x, y=dat$y,
-                lambda2=1.5, qv=2.001, method="power",eps=1e-8, standardize=F)
+                lambda2=1.5, qv=0.5, method="power",eps=1e-8, standardize=F)
 stop1 = Sys.time()
 difftime(stop1, start1, units="secs")
 
 KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=1.5, thr=1e-03, 
-    qv=2.01, loss = c("power"))
+    qv=0.5, loss = c("power"))
 
 
 start1 = Sys.time()

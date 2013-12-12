@@ -8,7 +8,8 @@ source("M_GCDpower.R")
 source("O_utilities.R")
 source("M_FHTgen.R")
 
-dyn.load("M_powerfamilyintNET.so")
+#shell("Rcmd SHLIB M_powerfamilyNET.f90 M_powerfamilyintNET.f90 M_powerfamilyhalfNET.f90 O_auxiliary.f90 -o M_powerfamilyNET.so")
+
 dyn.load("M_powerfamilyNET.so")
 
 
@@ -44,9 +45,13 @@ for(indp in 1:total.indep)
   write.csv(time.table, file=paste("timetable_", indp, ".csv", sep=""))
   avg.time.table = avg.time.table + time.table
 }
+
+
 avg.time.table = avg.time.table / total.indep
 write.csv(avg.time.table, file="avg.time.table.csv")
 save(avg.time.table, file="avgtable.rda")
+
+
 
 
 #start1 = Sys.time()
@@ -64,23 +69,37 @@ setwd("D:\\GitHub\\powerfamily\\to server\\timing\\t2")
 load("avgtable.rda")
 t2 = avg.time.table
 
+setwd("D:\\GitHub\\powerfamily\\to server\\timing\\t21")
+load("avgtable.rda")
+t21 = avg.time.table
+
+setwd("D:\\GitHub\\powerfamily\\to server\\timing\\t22")
+load("avgtable.rda")
+t22 = avg.time.table
+
+
+
+t_n5Kp100r05 = (t1+t2+t21+t22)/4
+library(xtable)
+xtable(t_n5Kp100r05, digits=3)
+
+
 setwd("D:\\GitHub\\powerfamily\\to server\\timing\\t3")
 load("avgtable.rda")
 t3 = avg.time.table
 
-setwd("D:\\GitHub\\powerfamily\\to server\\timing\\t5")
+setwd("D:\\GitHub\\powerfamily\\to server\\timing\\t4")
 load("avgtable.rda")
-t5 = avg.time.table
+t4 = avg.time.table
 
-setwd("D:\\GitHub\\powerfamily\\to server\\timing\\t6")
+setwd("D:\\GitHub\\powerfamily\\to server\\timing\\t41")
 load("avgtable.rda")
-t6 = avg.time.table
+t41 = avg.time.table
 
-t_n100p5Kr08 = (t1+t2)/2
+setwd("D:\\GitHub\\powerfamily\\to server\\timing\\t42")
+load("avgtable.rda")
+t42 = avg.time.table
+
+t_n100p5Kr08 = (t3+t4+t41+t42)/4
 library(xtable)
 xtable(t_n100p5Kr08, digits=3)
-
-
-t_n5Kp100r05 = (t3+t6)/2
-library(xtable)
-xtable(t_n5Kp100r05, digits=3)

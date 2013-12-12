@@ -20,17 +20,17 @@ if (length(y) != nobs)
 nlambda = 100
 lambda.factor = ifelse(nobs < nvars, 0.01,1e-04)
 lambda = NULL
-lambda2 = 0.5
+lambda2 = 1
 pf = rep(1, nvars)
 pf2 = rep(1, nvars)
 #exclude, 
 dfmax = nvars + 1
 pmax = min(dfmax * 1.2, nvars)
-standardize = TRUE
+standardize = FALSE
 eps = 1e-08
 maxit = 1e+06
 delta = 2
-
+qv=0.5
 
 #parameter setup
 if (length(pf) != nvars) 
@@ -85,35 +85,35 @@ require(Matrix)
 
 
 # About FORTRAN subroutines
-dyn.unload("O_hsvmlassoNET.dll")
-dyn.unload("O_sqsvmlassoNET.dll")
+#dyn.unload("O_hsvmlassoNET.dll")
+#dyn.unload("O_sqsvmlassoNET.dll")
 dyn.unload("M_powerfamilyNET.dll")
 dyn.unload("M_powerfamilyintNET.dll")
+dyn.unload("M_powerfamilyhalfNET.dll")
 
 ## cmd
-shell("del O_hsvmlassoNET.dll O_hsvmlassoNET.o")
-shell("Rcmd SHLIB O_hsvmlassoNET.f90 O_auxiliary.f90 -o O_hsvmlassoNET.dll")
+#shell("del O_hsvmlassoNET.dll O_hsvmlassoNET.o")
+#shell("Rcmd SHLIB O_hsvmlassoNET.f90 O_auxiliary.f90 -o O_hsvmlassoNET.dll")
 
 
-shell("del O_sqsvmlassoNET.dll O_sqsvmlassoNET.o")
-shell("Rcmd SHLIB O_sqsvmlassoNET.f90 O_auxiliary.f90 -o O_sqsvmlassoNET.dll")
+#shell("del O_sqsvmlassoNET.dll O_sqsvmlassoNET.o")
+#shell("Rcmd SHLIB O_sqsvmlassoNET.f90 O_auxiliary.f90 -o O_sqsvmlassoNET.dll")
 
 shell("del M_powerfamilyNET.dll M_powerfamilyNET.o")
-shell("Rcmd SHLIB M_powerfamilyNET.f90 O_auxiliary.f90 -o M_powerfamilyNET.dll")
+#shell("del M_powerfamilyintNET.dll M_powerfamilyintNET.o")
+#shell("del M_powerfamilyhalfNET M_powerfamilyhalfNET.o")
 
-shell("del M_powerfamilyintNET.dll M_powerfamilyintNET.o")
-shell("Rcmd SHLIB M_powerfamilyintNET.f90 O_auxiliary.f90 -o M_powerfamilyintNET.dll")
+shell("Rcmd SHLIB M_powerfamilyNET.f90 M_powerfamilyintNET.f90 M_powerfamilyhalfNET.f90 O_auxiliary.f90 -o M_powerfamilyNET.dll")
 
-dyn.load("O_hsvmlassoNET.dll")
-dyn.load("O_sqsvmlassoNET.dll")
+#dyn.load("O_hsvmlassoNET.dll")
+#dyn.load("O_sqsvmlassoNET.dll")
 dyn.load("M_powerfamilyNET.dll")
-dyn.load("M_powerfamilyintNET.dll")
-
-
+#dyn.load("M_powerfamilyintNET.dll")
+#dyn.load("M_powerfamilyhalfNET.dll")
 
 start1 = Sys.time()
 #################################################################################
-qv = 2
+qv = 0.5
 qv = as.double(qv)
 fit1 <- .Fortran("powerfamilyNET", qv, lam2, nobs, nvars, 
                  as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
@@ -121,22 +121,58 @@ fit1 <- .Fortran("powerfamilyNET", qv, lam2, nobs, nvars,
                  beta = double(pmax * nlam), ibeta = integer(pmax), nbeta = integer(nlam), 
                  alam = double(nlam), npass = integer(1), jerr = integer(1))
 
+#fit1=fit
 #################################################################################
 # output
-fit1 <- getoutput(fit1, maxit, pmax, nvars, vnames)
-fit1 <- c(fit1, list(npasses = fit1$npass, jerr = fit1$jerr))
+outlst <- getoutput(fit1, maxit, pmax, nvars, vnames)
+outlst <- c(outlst, list(npasses = fit1$npass, jerr = fit1$jerr))
+fit1=outlst
 class(fit1) <- c("powerfamilyNET")
 if (is.null(lambda)) 
   fit1$lambda <- lamfix(fit1$lambda)
 #fit$call <- this.call
 #################################################################################
 class(fit1) <- c("gcdnet", class(fit1))
-#fit1
+#summary(fit1)
 
 plot.gcdnet(fit1)
 
 stop1 = Sys.time()
 difftime(stop1, start1, units="secs")
+m = fit1
+
+
+start1 = Sys.time()
+#################################################################################
+qv = 0.5
+qv = as.double(qv)
+fit1 <- .Fortran("powerfamilyhalfNET", qv, lam2, nobs, nvars, 
+                 as.double(x), as.double(y), jd, pf, pf2, dfmax, pmax, nlam, 
+                 flmin, ulam, eps, isd, maxit, nalam = integer(1), b0 = double(nlam), 
+                 beta = double(pmax * nlam), ibeta = integer(pmax), nbeta = integer(nlam), 
+                 alam = double(nlam), npass = integer(1), jerr = integer(1))
+
+#fit1=fit
+#################################################################################
+# output
+outlst <- getoutput(fit1, maxit, pmax, nvars, vnames)
+outlst <- c(outlst, list(npasses = fit1$npass, jerr = fit1$jerr))
+fit1=outlst
+class(fit1) <- c("powerfamilyNET")
+if (is.null(lambda)) 
+  fit1$lambda <- lamfix(fit1$lambda)
+#fit$call <- this.call
+#################################################################################
+class(fit1) <- c("gcdnet", class(fit1))
+#summary(fit1)
+
+plot.gcdnet(fit1)
+
+stop1 = Sys.time()
+difftime(stop1, start1, units="secs")
+
+
+
 
 
 
@@ -167,6 +203,12 @@ plot.gcdnet(fit1.int)
 
 stop1 = Sys.time()
 difftime(stop1, start1, units="secs")
+
+
+
+
+
+
 
 
 

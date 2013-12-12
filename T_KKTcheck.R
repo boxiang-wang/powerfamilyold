@@ -249,22 +249,22 @@ source("M_GCDpower.R")
 source("U_KKTcheckings.R")
 # FORTRAN subroutines.
 dyn.load("M_powerfamilyNET.dll")
-dyn.load("M_powerfamilyintNET.dll")
 # Source file of data generator
 source("M_FHTgen.R")
 
-FHT = FHTgen(n=100, p=5000, rho=0.5)
+set.seed(1234)
+FHT = FHTgen(n=5000, p=100, rho=0.5)
 
 
 dat = FHT
 
 
 m = gcdnetpower(x=dat$x, y=dat$y,
-                 lambda2=0.01, qv=2, method="power",eps=1e-7, standardize=F)
+                 lambda2=1, qv=0.5, method="power",eps=1e-8, standardize=F)
 
 
-KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=0.01, thr=1e-5, 
-                  qv=2, loss = c("power"), print.out=F)
+KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=1, thr=1e-4, 
+                  qv=0.5, loss = c("power"), print.out=F)
 
 #################################################################################
 ############ construct KKT tables ################
@@ -316,7 +316,7 @@ xtable(cbind(p1,p2))
 
 
 set.seed(1234)
-FHT = FHTgen(n=100, p=1000, rho=0.8)
+FHT = FHTgen(n=100, p=5000, rho=0.8)
 dat = FHT
 m <- gcdnetpower(x=dat$x,y=dat$y,
                  #lambda=c(0.1,0.01),

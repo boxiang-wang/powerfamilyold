@@ -8,7 +8,6 @@ source("M_GCDpower.R")
 source("O_utilities.R")
 source("M_FHTgen.R")
 
-dyn.load("M_powerfamilyintNET.so")
 dyn.load("M_powerfamilyNET.so")
 
 
@@ -20,7 +19,7 @@ y = dat$y
 total.indep = 5
 
 l2.list = c(0, 10^(-4), 10^(-2),1)
-qv.list = c(0.25, 0.5, 1, 1.5, 2, 5)
+qv.list = c(0.25, 0.5, 1, 2, 3, 5)
 avg.time.table = matrix(0, length(l2.list), length(qv.list))
 
 for(indp in 1:total.indep)
