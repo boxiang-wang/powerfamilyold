@@ -10,13 +10,10 @@ source("M_FHTgen.R")
 
 dyn.load("M_powerfamilyNET.so")
 
-
-FHT = FHTgen(n=100, p=5000, rho=0.8)
-dat = FHT
-x = dat$x
-y = dat$y
-
+set.seed(1234)
+seeds = sample(1:1000, size=10*4*6*2)
 total.indep = 5
+seed.ind = 121
 
 l2.list = c(0, 10^(-4), 10^(-2),1)
 qv.list = c(0.25, 0.5, 1, 2, 3, 5)
@@ -33,6 +30,11 @@ for(indp in 1:total.indep)
       
       l2 = l2.list[i]
       qv = qv.list[j]
+      set.seed(seeds[seed.ind])
+      FHT = FHTgen(n=100, p=5000, rho=0.8)
+      x = FHT$x
+      y = FHT$y
+      seed.ind = seed.ind + 1
       start1 = Sys.time()
       m = gcdnetpower(x=x, y=y,
                       lambda2=l2, qv=qv, method="power",eps=1e-8, standardize=F)
