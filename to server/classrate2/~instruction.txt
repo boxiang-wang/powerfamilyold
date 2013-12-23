@@ -1,0 +1,7 @@
+autompg regression
+clean2 imblanced
+housing no reponse
+parkinsons regression
+
+chess not function
+madelon not function

@@ -1,0 +1,122 @@
+
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> rm(list=ls(all=TRUE))
+> 
+> 
+> #setwd("D:\\GitHub\\powerfamily")
+> require(Matrix)
+Loading required package: Matrix
+Loading required package: lattice
+> 
+> # Source files with tool functions.
+> source("O_utilities.R")
+> 
+> # Main program
+> source("M_GCDpower.R")
+> # Prediction, plot
+> source("M_p.GCDpower.R")
+> # KKT checking, CV
+> source("M_cv.GCDpower.R")
+> # coefficients
+> source("M_coef.GCDpower.R")
+> 
+> 
+> # dyn.load("M_powerfamilyNET.dll")
+> dyn.load("M_powerfamilyNET.so")
+> 
+> args=(commandArgs(TRUE))
+> if(length(args)==0){
++   print("No arguments supplied.")
++ }else{
++   for(i in 1:length(args)){
++     eval(parse(text=args[[i]]))
++   }
++ }
+> 
+> print(qv)
+[1] 0.5
+> #FHT = FHTgen(n=100, p=5000, rho=0.8)
+> load("data/colon.rda")
+> x = colon.x
+> y = colon.y
+> y = c(-1,1)[as.factor(y)]
+> 
+> 
+> 
+> nrep = 100
+> seed = sample((1:nrep) + 2001, nrep)
+> #ans = matrix(0, 7, nrep)
+> #time = matrix(0, 7, nrep)
+> #nzo = matrix(0, 7, nrep)
+> 
+> load("q=0.5_ans.rda")
+> load("q=0.5_time.rda")
+> load("q=0.5_nzo.rda")
+> 
+> for (j in 95:100){
++   print(paste("q =", qv, "j =", j))
++   write.csv(NA, file=paste("q_", qv, "_j_", j, ".csv", sep=""))
++   i = 1
++   set.seed(seed[j])
++   index = sample(1:nrow(x),as.integer(nrow(x)/5),replace=F) 
++   test_x = x[index,]
++   test_y = y[index]
++   train_x = x[-index,]
++   train_y = y[-index]
++   for(lambda2 in c(1e-4,1e-3,1e-2,1e-1,1,5,10)){
++     tim = system.time(cv<-cv.GCDpower(train_x, train_y, eps=1e-8, qv=qv, delta=2,
++                                       lambda2=lambda2, method="power",
++                                       pred.loss="misclass", nfolds=5))[3]
++     coef.cvs = coef(cv, s="lambda.1se")[-1,]
++     nzov= length(coef.cvs[coef.cvs != 0])
++     pre = predict(cv$GCDpower.fit, newx = test_x, s = cv$lambda.1se, type = "class" )
++     error = (test_y != pre) 
++     nzo[i,j] = nzov
++     time[i,j] = tim
++     ans[i,j] = res = mean(error)
++     i = i + 1
++   }
++   save(ans, file=paste("q=", qv, "_ans.rda", sep=""))
++   save(nzo, file=paste("q=", qv, "_nzo.rda", sep=""))
++   save(time, file=paste("q=", qv, "_time.rda", sep=""))
++ }
+[1] "q = 0.5 j = 95"
+[1] "q = 0.5 j = 96"
+[1] "q = 0.5 j = 97"
+[1] "q = 0.5 j = 98"
+[1] "q = 0.5 j = 99"
+[1] "q = 0.5 j = 100"
+> (ans.avg = apply(ans,1,mean)*100)
+[1] 18.25000 17.83333 17.83333 17.08333 15.58333 17.58333 15.25000
+> (nzo.avg = apply(nzo,1,mean))
+[1]   5.63   5.85   6.25   7.94  23.95  83.83 155.49
+> (time.avg = apply(time,1,mean))
+[1] 24.24964 23.81827 31.68903 58.13558 63.68659 41.61901 31.39481
+> 
+> save(ans.avg, file=paste("ans", qv, ".rda", sep=""))
+> save(nzo.avg, file=paste("nzo", qv, ".rda", sep=""))
+> save(time.avg, file=paste("time", qv, ".rda", sep=""))
+> 
+> 
+> proc.time()
+    user   system  elapsed 
+1668.391    0.275 1673.643 

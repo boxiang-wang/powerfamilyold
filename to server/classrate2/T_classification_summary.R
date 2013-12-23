@@ -1,0 +1,97 @@
+setwd("D://GitHub//powerfamily//to server//classrate2")
+
+printtable = function(dat)
+{
+  setwd(paste("D://GitHub//powerfamily//to server//classrate2/",dat,sep=""))
+  
+  # lambda2 in c(1e-4,1e-3,1e-2,1e-1,1,5,10)
+  
+  load("ans0.5.rda")
+  (ans.avg_05 = ans.avg)
+  load("ans1.rda")
+  (ans.avg_1 = ans.avg)
+  load("ans2.rda")
+  (ans.avg_2 = ans.avg)
+  load("ans5.rda")
+  (ans.avg_5 = ans.avg)
+  
+  load("nzo0.5.rda")
+  (nzo.avg_05 = nzo.avg)
+  load("nzo1.rda")
+  (nzo.avg_1 = nzo.avg)
+  load("nzo2.rda")
+  (nzo.avg_2 = nzo.avg)
+  load("nzo5.rda")
+  (nzo.avg_5 = nzo.avg)
+  
+  load("time0.5.rda")
+  (time.avg_05 = time.avg)
+  load("time1.rda")
+  (time.avg_1 = time.avg)
+  load("time2.rda")
+  (time.avg_2 = time.avg)
+  load("time5.rda")
+  (time.avg_5 = time.avg)
+  
+  i05 = which.min(ans.avg_05)
+  i1 = which.min(ans.avg_1)
+  i2 = which.min(ans.avg_2)
+  i5 = which.min(ans.avg_5)
+  
+  loc.list = c(i05, i1, i2, i5)
+  qv.list = c(0.5, 1, 2, 5)
+  lambda2.list = c(1e-4,1e-3,1e-2,1e-1,1,5,10)[loc.list]
+  ans.list = c(ans.avg_05[i05], ans.avg_1[i1], ans.avg_2[i2], ans.avg_5[i5])
+  nzo.list = c(nzo.avg_05[i05], nzo.avg_1[i1], nzo.avg_2[i2], nzo.avg_5[i5])
+  time.list = c(time.avg_05[i05], time.avg_1[i1], time.avg_2[i2], time.avg_5[i5])
+  cbind(qv.list, lambda2.list, ans.list, nzo.list, time.list)
+}
+
+printtable("australian")
+printtable("chess")
+printtable("german")
+printtable("Hill")
+printtable("ionosphere")
+printtable("madelon")
+printtable("pima")
+printtable("SAfrica")
+printtable("sonar")
+printtable("spam")
+printtable("SPECTF")
+printtable("wdbc")
+
+printtable("1arcene")
+printtable("1breast")
+printtable("1colon")
+printtable("1leuk")
+printtable("1prostate")
+
+printtable("australian2")
+printtable("german2")
+printtable("SPECTF2")
+
+# Alphabetical Order
+print(xtable(
+ rbind(
+ printtable("1arcene"),
+ #printtable("australian"),
+ printtable("1breast"),
+ #printtable("chess"),
+ printtable("1colon"),
+ #printtable("german"),
+ #printtable("Hill"),
+ #printtable("ionosphere"),
+ printtable("1leuk"),
+ #printtable("madelon"),
+ #printtable("pima"),
+ printtable("1prostate")
+ #printtable("SAfrica"),
+ #printtable("sonar"),
+ #printtable("spam"),
+ #printtable("SPECTF"),
+ #printtable("wdbc")
+),
+caption="Misclassification Rate Table (10 times)",
+label="tab:mis1",
+digits=c(0,0,4,3,1,3)
+),include.rownames=FALSE)

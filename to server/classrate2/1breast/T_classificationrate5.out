@@ -1,0 +1,141 @@
+
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> rm(list=ls(all=TRUE))
+> 
+> load("breast.rda")
+> y = c(-1,1)[as.factor(y)]
+> 
+> #setwd("D:\\GitHub\\powerfamily")
+> require(Matrix)
+Loading required package: Matrix
+Loading required package: lattice
+> 
+> # Source files with tool functions.
+> source("O_utilities.R")
+> 
+> # Main program
+> source("M_GCDpower.R")
+> # Prediction, plot
+> source("M_p.GCDpower.R")
+> # KKT checking, CV
+> source("M_cv.GCDpower.R")
+> # coefficients
+> source("M_coef.GCDpower.R")
+> 
+> 
+> # dyn.load("M_powerfamilyNET.dll")
+> dyn.load("M_powerfamilyNET.so")
+> 
+> args=(commandArgs(TRUE))
+> if(length(args)==0){
++   print("No arguments supplied.")
++ }else{
++   for(i in 1:length(args)){
++     eval(parse(text=args[[i]]))
++   }
++ }
+> 
+> print(qv)
+[1] 5
+> if(!exists('st'))
++ {
++   st = 1
++ }
+> if(!exists('en'))
++ {
++   en = 1
++ }
+> 
+> if(!exists('nrep'))
++ {
++   nrep = 10
++ }
+> 
+> set.seed(1234)
+> seed = sample((1:nrep) + 2001, nrep)
+> 
+> if(st == 1)
++ {
++   ans = matrix(0, 7, nrep)
++   time = matrix(0, 7, nrep)
++   nzo = matrix(0, 7, nrep)
++ } else
++ {
++   load(paste("q=", qv, "_ans.rda"))
++   load(paste("q=", qv, "_time.rda"))
++   load(paste("q=", qv, "_nzo.rda"))
++ }
+> 
+> 
+> 
+> write.csv(NA, file=paste("q_", qv, "_j_", 0, ".csv", sep=""))
+> for (j in st:en){
++   print(paste("q =", qv, "j =", j))
++   write.csv(NA, file=paste("q_", qv, "_j_", j, ".csv", sep=""))
++   file.remove(paste("q_", qv, "_j_", (j-1), ".csv", sep=""))
++   i = 1
++   set.seed(seed[j])
++   index = sample(1:nrow(x),as.integer(nrow(x)/5),replace=F) 
++   test_x = x[index,]
++   test_y = y[index]
++   train_x = x[-index,]
++   train_y = y[-index]
++   for(lambda2 in c(1e-4,1e-3,1e-2,1e-1,1,5,10)){
++     tim = system.time(cv<-cv.GCDpower(train_x, train_y, eps=1e-8, qv=qv, delta=2,
++                                       lambda2=lambda2, method="power",
++                                       pred.loss="misclass", nfolds=5))[3]
++     coef.cvs = coef(cv, s="lambda.1se")[-1,]
++     nzov= length(coef.cvs[coef.cvs != 0])
++     pre = predict(cv$GCDpower.fit, newx = test_x, s = cv$lambda.1se, type = "class" )
++     error = (test_y != pre) 
++     nzo[i,j] = nzov
++     time[i,j] = tim
++     ans[i,j] = res = mean(error)
++     i = i + 1
++   }
++   save(ans, file=paste("q=", qv, "_ans.rda", sep=""))
++   save(nzo, file=paste("q=", qv, "_nzo.rda", sep=""))
++   save(time, file=paste("q=", qv, "_time.rda", sep=""))
++ }
+[1] "q = 5 j = 1"
+[1] "q = 5 j = 2"
+[1] "q = 5 j = 3"
+[1] "q = 5 j = 4"
+[1] "q = 5 j = 5"
+[1] "q = 5 j = 6"
+[1] "q = 5 j = 7"
+[1] "q = 5 j = 8"
+[1] "q = 5 j = 9"
+[1] "q = 5 j = 10"
+> (ans.avg = apply(ans,1,mean)*100)
+[1] 21.25 21.25 21.25 21.25 21.25 27.50 31.25
+> (nzo.avg = apply(nzo,1,mean))
+[1]   8.4   7.1  16.3  11.0  48.3 242.1 321.1
+> (time.avg = apply(time,1,mean))
+[1] 112.6466 111.1494 122.9735 129.0366 144.9726 216.3785 257.0789
+> 
+> save(ans.avg, file=paste("ans", qv, ".rda", sep=""))
+> save(nzo.avg, file=paste("nzo", qv, ".rda", sep=""))
+> save(time.avg, file=paste("time", qv, ".rda", sep=""))
+> 
+> 
+> proc.time()
+     user    system   elapsed 
+ 1074.374     0.972 11051.546 

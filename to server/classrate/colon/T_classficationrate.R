@@ -38,12 +38,17 @@ y = c(-1,1)[as.factor(y)]
 
 
 
-nrep = 55
+nrep = 100
 seed = sample((1:nrep) + 2001, nrep)
-ans = matrix(0, 7, nrep)
-time = matrix(0, 7, nrep)
-nzo = matrix(0, 7, nrep)
-for (j in 1:nrep){
+#ans = matrix(0, 7, nrep)
+#time = matrix(0, 7, nrep)
+#nzo = matrix(0, 7, nrep)
+
+load("q=0.5_ans.rda")
+load("q=0.5_time.rda")
+load("q=0.5_nzo.rda")
+
+for (j in 95:100){
   print(paste("q =", qv, "j =", j))
   write.csv(NA, file=paste("q_", qv, "_j_", j, ".csv", sep=""))
   i = 1

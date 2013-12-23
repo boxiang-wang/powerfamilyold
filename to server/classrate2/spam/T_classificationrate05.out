@@ -1,0 +1,141 @@
+
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> rm(list=ls(all=TRUE))
+> 
+> load("spam.rda")
+> x = spam[,1:57]
+> y = c(-1,1)[as.factor(spam$V58)]
+> 
+> #setwd("D:\\GitHub\\powerfamily")
+> require(Matrix)
+Loading required package: Matrix
+Loading required package: lattice
+> 
+> # Source files with tool functions.
+> source("O_utilities.R")
+> 
+> # Main program
+> source("M_GCDpower.R")
+> # Prediction, plot
+> source("M_p.GCDpower.R")
+> # KKT checking, CV
+> source("M_cv.GCDpower.R")
+> # coefficients
+> source("M_coef.GCDpower.R")
+> 
+> 
+> # dyn.load("M_powerfamilyNET.dll")
+> dyn.load("M_powerfamilyNET.so")
+> 
+> args=(commandArgs(TRUE))
+> if(length(args)==0){
++   print("No arguments supplied.")
++ }else{
++   for(i in 1:length(args)){
++     eval(parse(text=args[[i]]))
++   }
++ }
+> 
+> print(qv)
+[1] 0.5
+> if(!exists('st'))
++ {
++   st = 1
++ }
+> if(!exists('en'))
++ {
++   en = 1
++ }
+> if(!exists('nrep'))
++ {
++   nrep = 10
++ }
+> 
+> set.seed(1234)
+> seed = sample((1:nrep) + 2001, nrep)
+> 
+> if(st == 1)
++ {
++   ans = matrix(0, 7, nrep)
++   time = matrix(0, 7, nrep)
++   nzo = matrix(0, 7, nrep)
++ } else
++ {
++   load(paste("q=", qv, "_ans.rda", sep=""))
++   load(paste("q=", qv, "_time.rda", sep=""))
++   load(paste("q=", qv, "_nzo.rda", sep=""))
++ }
+> 
+> 
+> 
+> write.csv(NA, file=paste("q_", qv, "_j_", 0, ".csv", sep=""))
+> for (j in st:en){
++   print(paste("q =", qv, "j =", j))
++   write.csv(NA, file=paste("q_", qv, "_j_", j, ".csv", sep=""))
++   file.remove(paste("q_", qv, "_j_", (j-1), ".csv", sep=""))
++   i = 1
++   set.seed(seed[j])
++   index = sample(1:nrow(x),as.integer(nrow(x)/5),replace=F) 
++   test_x = x[index,]
++   test_y = y[index]
++   train_x = x[-index,]
++   train_y = y[-index]
++   for(lambda2 in c(1e-4,1e-3,1e-2,1e-1,1,5,10)){
++     tim = system.time(cv<-cv.GCDpower(train_x, train_y, eps=1e-8, qv=qv, delta=2,
++                                       lambda2=lambda2, method="power",
++                                       pred.loss="misclass", nfolds=5))[3]
++     coef.cvs = coef(cv, s="lambda.1se")[-1,]
++     nzov= length(coef.cvs[coef.cvs != 0])
++     pre = predict(cv$GCDpower.fit, newx = test_x, s = cv$lambda.1se, type = "class" )
++     error = (test_y != pre) 
++     nzo[i,j] = nzov
++     time[i,j] = tim
++     ans[i,j] = res = mean(error)
++     i = i + 1
++   }
++   save(ans, file=paste("q=", qv, "_ans.rda", sep=""))
++   save(nzo, file=paste("q=", qv, "_nzo.rda", sep=""))
++   save(time, file=paste("q=", qv, "_time.rda", sep=""))
++ }
+[1] "q = 0.5 j = 8"
+[1] "q = 0.5 j = 9"
+[1] "q = 0.5 j = 10"
+Warning messages:
+1: In file.remove(paste("q_", qv, "_j_", (j - 1), ".csv", sep = "")) :
+  cannot remove file 'q_0.5_j_7.csv', reason 'No such file or directory'
+2: In file.remove(paste("q_", qv, "_j_", (j - 1), ".csv", sep = "")) :
+  cannot remove file 'q_0.5_j_8.csv', reason 'No such file or directory'
+> (ans.avg = apply(ans,1,mean)*100)
+[1]  7.195652  7.467391  7.673913  8.510870 12.380435 23.434783 35.576087
+> (nzo.avg = apply(nzo,1,mean))
+[1] 48.3 46.5 49.5 52.6 56.4 55.6 56.0
+> (time.avg = apply(time,1,mean))
+[1] 3214.5208 1002.5748  285.0351   59.0922   12.6403   10.2411   10.2221
+> 
+> save(ans.avg, file=paste("ans", qv, ".rda", sep=""))
+> save(nzo.avg, file=paste("nzo", qv, ".rda", sep=""))
+> save(time.avg, file=paste("time", qv, ".rda", sep=""))
+> 
+> 
+> proc.time()
+    user   system  elapsed 
+9276.680    0.462 9353.055 
