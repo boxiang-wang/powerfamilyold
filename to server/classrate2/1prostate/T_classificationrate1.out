@@ -17,6 +17,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+[Previously saved workspace restored]
+
 > rm(list=ls(all=TRUE))
 > 
 > load("prostate.rda")
@@ -132,7 +134,7 @@ Loading required package: lattice
 > (nzo.avg = apply(nzo,1,mean))
 [1]   1.8   2.5   3.1  22.3  78.3  95.4 159.0
 > (time.avg = apply(time,1,mean))
-[1] 11.6579  9.9641 10.2549 10.7065 13.3804 15.2979 15.0568
+[1] 6.6073 5.5890 5.7707 6.0452 7.3307 8.2558 8.1554
 > 
 > save(ans.avg, file=paste("ans", qv, ".rda", sep=""))
 > save(nzo.avg, file=paste("nzo", qv, ".rda", sep=""))
@@ -141,4 +143,4 @@ Loading required package: lattice
 > 
 > proc.time()
    user  system elapsed 
-868.605   0.343 877.756 
+483.923   0.389 489.305 

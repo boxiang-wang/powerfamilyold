@@ -47,51 +47,67 @@ printtable = function(dat)
   cbind(qv.list, lambda2.list, ans.list, nzo.list, time.list)
 }
 
-printtable("australian")
-printtable("chess")
-printtable("german")
-printtable("Hill")
-printtable("ionosphere")
-printtable("madelon")
-printtable("pima")
-printtable("SAfrica")
-printtable("sonar")
-printtable("spam")
-printtable("SPECTF")
-printtable("wdbc")
+checktable = function(dat)
+{
+  a1 = printtable(dat)
+  a2 = printtable(paste(dat, '2', sep=""))
+  cbind(a1, NA, a2)
+}
 
-printtable("1arcene")
-printtable("1breast")
-printtable("1colon")
-printtable("1leuk")
-printtable("1prostate")
+checktable("1arcene")
+checktable("1breast")
+checktable("1colon")
+checktable("1leuk")
+checktable("1prostate")
+checktable("australian")
+checktable("chess")
+checktable("german")
+checktable("Hill")
+checktable("ionosphere")
+checktable("madelon")
+checktable("pima")
+checktable("SAfrica")
+checktable("sonar")
+checktable("spam")
+checktable("SPECTF")
+checktable("wdbc")
 
-printtable("australian2")
-printtable("german2")
-printtable("SPECTF2")
+
+
+
+
+a=rbind(
+checktable("1arcene"),
+checktable("1breast"),
+checktable("1colon"),
+checktable("1leuk"),
+checktable("1prostate"),
+checktable("australian"),
+checktable("chess"),
+checktable("german"),
+checktable("Hill"),
+checktable("ionosphere"),
+checktable("madelon"),
+checktable("pima"),
+checktable("SAfrica"),
+checktable("sonar"),
+checktable("spam"),
+checktable("SPECTF"),
+checktable("wdbc"))
+
+write.csv(a, file="summary.csv")
+
 
 # Alphabetical Order
 print(xtable(
- rbind(
- printtable("1arcene"),
- #printtable("australian"),
- printtable("1breast"),
- #printtable("chess"),
- printtable("1colon"),
- #printtable("german"),
- #printtable("Hill"),
- #printtable("ionosphere"),
- printtable("1leuk"),
- #printtable("madelon"),
- #printtable("pima"),
- printtable("1prostate")
- #printtable("SAfrica"),
- #printtable("sonar"),
- #printtable("spam"),
- #printtable("SPECTF"),
- #printtable("wdbc")
-),
-caption="Misclassification Rate Table (10 times)",
-label="tab:mis1",
-digits=c(0,0,4,3,1,3)
+  rbind(
+    printtable("arcene"),
+    printtable("breast"),
+    printtable("colon"),
+    printtable("leuk"),
+    printtable("prostate")
+  ),
+  caption="Misclassification Rate Table (10 times)",
+  label="tab:mis1",
+  digits=c(0,0,4,3,1,3)
 ),include.rownames=FALSE)

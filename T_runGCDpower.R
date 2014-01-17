@@ -19,16 +19,14 @@ source("M_coef.GCDpower.R")
 source("U_KKTcheckings.R")
 # Source file of data generator
 source("M_FHTgen.R")
-# Two FORTRAN subroutines.
-shell("del M_powerfamilyNET.dll M_powerfamilyNET.o")
-shell("Rcmd SHLIB M_powerfamilyNET.f90 O_auxiliary.f90 -o M_powerfamilyNET.dll")
 
-shell("del M_powerfamilyintNET.dll M_powerfamilyintNET.o")
-shell("Rcmd SHLIB M_powerfamilyintNET.f90 O_auxiliary.f90 -o M_powerfamilyintNET.dll")
+# dyn.unload("M_powerfamilyNET.dll")
+# shell("del M_powerfamilyNET.dll M_powerfamilyNET.o")
+# shell("del M_powerfamilyintNET.dll M_powerfamilyintNET.o")
+# shell("del M_powerfamilyhalfNET.dll M_powerfamilyhalfNET.o")
+# shell("Rcmd SHLIB M_powerfamilyNET.f90 M_powerfamilyintNET.f90 M_powerfamilyhalfNET.f90 O_auxiliary.f90 -o M_powerfamilyNET.dll")
 
-dyn.load("O_hsvmlassoNET.dll")
-dyn.load("O_sqsvmlassoNET.dll")
-dyn.load("M_powerfamilyNET.dll")
+# dyn.load("M_powerfamilyNET.dll")
 
 set.seed(1234)
 FHT = FHTgen(n=80, p=95, rho=0.5)
@@ -41,6 +39,13 @@ m = gcdnetpower(x=dat$x, y=dat$y,
                 lambda2=0.01, qv=2, method="power",eps=1e-8, standardize=F)
 stop1 = Sys.time()
 difftime(stop1, start1, units="secs")
+
+start1 = Sys.time()
+m1 = gcdnetpower(x=dat$x, y=dat$y,
+                lambda2=0.01, qv=1, method="power",eps=1e-8, standardize=F)
+stop1 = Sys.time()
+difftime(stop1, start1, units="secs")
+
 
 system.time(m <- gcdnetpower(x=dat$x, y=dat$y,
                             lambda2=0.01, qv=2, method="power",eps=1e-8, standardize=F))[3]

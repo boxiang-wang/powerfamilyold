@@ -17,6 +17,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+[Previously saved workspace restored]
+
 > rm(list=ls(all=TRUE))
 > 
 > load("arcene.rda")
@@ -131,7 +133,7 @@ Loading required package: lattice
 > (nzo.avg = apply(nzo,1,mean))
 [1]  14.5  15.2  55.7 123.8 484.0 607.7 928.3
 > (time.avg = apply(time,1,mean))
-[1] 147.1530 148.8700 160.2032 261.7257 430.1790 418.5430 359.5563
+[1] 21.9205 20.4797 22.4854 36.7449 62.0712 61.3706 52.9030
 > 
 > save(ans.avg, file=paste("ans", qv, ".rda", sep=""))
 > save(nzo.avg, file=paste("nzo", qv, ".rda", sep=""))
@@ -139,5 +141,5 @@ Loading required package: lattice
 > 
 > 
 > proc.time()
-     user    system   elapsed 
- 2560.947     1.073 19336.083 
+    user   system  elapsed 
+2788.198    0.858 2795.842 

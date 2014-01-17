@@ -1,0 +1,233 @@
+
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> rm(list=ls(all=TRUE))
+> 
+> 
+> #setwd("D:\\GitHub\\powerfamily")
+> require(Matrix)
+Loading required package: Matrix
+Loading required package: lattice
+> 
+> # Source files with tool functions.
+> source("O_utilities.R")
+> 
+> # Main program
+> source("M_GCDpower.R")
+> # Prediction, plot
+> source("M_p.GCDpower.R")
+> # KKT checking, CV
+> source("M_cv.GCDpower.R")
+> # coefficients
+> source("M_coef.GCDpower.R")
+> 
+> 
+> # dyn.load("M_powerfamilyNET.dll")
+> dyn.load("M_powerfamilyNET.so")
+> 
+> args=(commandArgs(TRUE))
+> if(length(args)==0){
++   print("No arguments supplied.")
++ }else{
++   for(i in 1:length(args)){
++     eval(parse(text=args[[i]]))
++   }
++ }
+> 
+> print(qv)
+[1] 0.5
+> load("prostate.rda")
+> x = prostate.x
+> y = prostate.y
+> y = c(-1,1)[as.factor(y)]
+> 
+> 
+> if(!exists('st'))
++ {
++   st = 1
++ }
+> if(!exists('en'))
++ {
++   en = 1
++ }
+> 
+> 
+> nrep = 100
+> set.seed(1234)
+> seed = sample((1:nrep) + 2001, nrep)
+> 
+> if(st == 1)
++ {
++   ans = matrix(0, 7, nrep)
++   time = matrix(0, 7, nrep)
++   nzo = matrix(0, 7, nrep)
++ } else
++ {
++   load(paste("q=", qv, "_ans.rda"))
++   load(paste("q=", qv, "_time.rda"))
++   load(paste("q=", qv, "_nzo.rda"))
++ }
+> 
+> 
+> 
+> 
+> for (j in st:en){
++   print(paste("q =", qv, "j =", j))
++   write.csv(NA, file=paste("q_", qv, "_j_", j, ".csv", sep=""))
++   i = 1
++   set.seed(seed[j])
++   index = sample(1:nrow(x),as.integer(nrow(x)/5),replace=F) 
++   test_x = x[index,]
++   test_y = y[index]
++   train_x = x[-index,]
++   train_y = y[-index]
++   for(lambda2 in c(1e-4,1e-3,1e-2,1e-1,1,5,10)){
++     tim = system.time(cv<-cv.GCDpower(train_x, train_y, eps=1e-8, qv=qv, delta=2,
++                                       lambda2=lambda2, method="power",
++                                       pred.loss="misclass", nfolds=5))[3]
++     coef.cvs = coef(cv, s="lambda.1se")[-1,]
++     nzov= length(coef.cvs[coef.cvs != 0])
++     pre = predict(cv$GCDpower.fit, newx = test_x, s = cv$lambda.1se, type = "class" )
++     error = (test_y != pre) 
++     nzo[i,j] = nzov
++     time[i,j] = tim
++     ans[i,j] = res = mean(error)
++     i = i + 1
++   }
++   save(ans, file=paste("q=", qv, "_ans.rda", sep=""))
++   save(nzo, file=paste("q=", qv, "_nzo.rda", sep=""))
++   save(time, file=paste("q=", qv, "_time.rda", sep=""))
++ }
+[1] "q = 0.5 j = 1"
+[1] "q = 0.5 j = 2"
+[1] "q = 0.5 j = 3"
+[1] "q = 0.5 j = 4"
+[1] "q = 0.5 j = 5"
+[1] "q = 0.5 j = 6"
+[1] "q = 0.5 j = 7"
+[1] "q = 0.5 j = 8"
+[1] "q = 0.5 j = 9"
+[1] "q = 0.5 j = 10"
+[1] "q = 0.5 j = 11"
+[1] "q = 0.5 j = 12"
+[1] "q = 0.5 j = 13"
+[1] "q = 0.5 j = 14"
+[1] "q = 0.5 j = 15"
+[1] "q = 0.5 j = 16"
+[1] "q = 0.5 j = 17"
+[1] "q = 0.5 j = 18"
+[1] "q = 0.5 j = 19"
+[1] "q = 0.5 j = 20"
+[1] "q = 0.5 j = 21"
+[1] "q = 0.5 j = 22"
+[1] "q = 0.5 j = 23"
+[1] "q = 0.5 j = 24"
+[1] "q = 0.5 j = 25"
+[1] "q = 0.5 j = 26"
+[1] "q = 0.5 j = 27"
+[1] "q = 0.5 j = 28"
+[1] "q = 0.5 j = 29"
+[1] "q = 0.5 j = 30"
+[1] "q = 0.5 j = 31"
+[1] "q = 0.5 j = 32"
+[1] "q = 0.5 j = 33"
+[1] "q = 0.5 j = 34"
+[1] "q = 0.5 j = 35"
+[1] "q = 0.5 j = 36"
+[1] "q = 0.5 j = 37"
+[1] "q = 0.5 j = 38"
+[1] "q = 0.5 j = 39"
+[1] "q = 0.5 j = 40"
+[1] "q = 0.5 j = 41"
+[1] "q = 0.5 j = 42"
+[1] "q = 0.5 j = 43"
+[1] "q = 0.5 j = 44"
+[1] "q = 0.5 j = 45"
+[1] "q = 0.5 j = 46"
+[1] "q = 0.5 j = 47"
+[1] "q = 0.5 j = 48"
+[1] "q = 0.5 j = 49"
+[1] "q = 0.5 j = 50"
+[1] "q = 0.5 j = 51"
+[1] "q = 0.5 j = 52"
+[1] "q = 0.5 j = 53"
+[1] "q = 0.5 j = 54"
+[1] "q = 0.5 j = 55"
+[1] "q = 0.5 j = 56"
+[1] "q = 0.5 j = 57"
+[1] "q = 0.5 j = 58"
+[1] "q = 0.5 j = 59"
+[1] "q = 0.5 j = 60"
+[1] "q = 0.5 j = 61"
+[1] "q = 0.5 j = 62"
+[1] "q = 0.5 j = 63"
+[1] "q = 0.5 j = 64"
+[1] "q = 0.5 j = 65"
+[1] "q = 0.5 j = 66"
+[1] "q = 0.5 j = 67"
+[1] "q = 0.5 j = 68"
+[1] "q = 0.5 j = 69"
+[1] "q = 0.5 j = 70"
+[1] "q = 0.5 j = 71"
+[1] "q = 0.5 j = 72"
+[1] "q = 0.5 j = 73"
+[1] "q = 0.5 j = 74"
+[1] "q = 0.5 j = 75"
+[1] "q = 0.5 j = 76"
+[1] "q = 0.5 j = 77"
+[1] "q = 0.5 j = 78"
+[1] "q = 0.5 j = 79"
+[1] "q = 0.5 j = 80"
+[1] "q = 0.5 j = 81"
+[1] "q = 0.5 j = 82"
+[1] "q = 0.5 j = 83"
+[1] "q = 0.5 j = 84"
+[1] "q = 0.5 j = 85"
+[1] "q = 0.5 j = 86"
+[1] "q = 0.5 j = 87"
+[1] "q = 0.5 j = 88"
+[1] "q = 0.5 j = 89"
+[1] "q = 0.5 j = 90"
+[1] "q = 0.5 j = 91"
+[1] "q = 0.5 j = 92"
+[1] "q = 0.5 j = 93"
+[1] "q = 0.5 j = 94"
+[1] "q = 0.5 j = 95"
+[1] "q = 0.5 j = 96"
+[1] "q = 0.5 j = 97"
+[1] "q = 0.5 j = 98"
+[1] "q = 0.5 j = 99"
+[1] "q = 0.5 j = 100"
+> (ans.avg = apply(ans,1,mean)*100)
+[1] 10.10 10.45 10.20  9.70  8.50  9.20  9.80
+> (nzo.avg = apply(nzo,1,mean))
+[1]   2.76   3.17   7.38   6.02  19.17  74.44 127.64
+> (time.avg = apply(time,1,mean))
+[1] 23.08684 18.28586 18.40621 22.26891 29.45998 30.51748 27.34022
+> 
+> save(ans.avg, file=paste("ans", qv, ".rda", sep=""))
+> save(nzo.avg, file=paste("nzo", qv, ".rda", sep=""))
+> save(time.avg, file=paste("time", qv, ".rda", sep=""))
+> 
+> 
+> proc.time()
+     user    system   elapsed 
+16464.265     0.697 17010.028 

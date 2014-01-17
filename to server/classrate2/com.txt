@@ -3,79 +3,11 @@ nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=10 nrep=10' T_classificationrat
 nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=10 nrep=10' T_classificationrate.R  T_classificationrate2.out  &
 nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=10 nrep=10' T_classificationrate.R  T_classificationrate5.out  &
 
-german2
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-Hill2
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-ionosphere2
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-sonar2
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-SPECTF2
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-wdbc2
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-madelon
+Hill wolf
 nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=10 nrep=10' T_classificationrate.R  T_classificationrate05.out  &
 nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=10 nrep=10' T_classificationrate.R  T_classificationrate1.out  &
 nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=10 nrep=10' T_classificationrate.R  T_classificationrate2.out  &
 nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=10 nrep=10' T_classificationrate.R  T_classificationrate5.out  &
 
 
-# next batch 
-chess2 (tilde)
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-madelon2 (wagonga)
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-
-pima2 (dogleg)
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-
-SAfrica2 (undone)
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
-
-
-spam2 (undone)
-nohup nice -n19 R CMD BATCH '--args qv=0.5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate05.out  &
-nohup nice -n19 R CMD BATCH '--args qv=1 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate1.out  &
-nohup nice -n19 R CMD BATCH '--args qv=2 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate2.out  &
-nohup nice -n19 R CMD BATCH '--args qv=5 st=1 en=100 nrep=100' T_classificationrate.R  T_classificationrate5.out  &
+ cd Research/PF/classrate2

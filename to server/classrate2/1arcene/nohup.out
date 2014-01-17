@@ -1,0 +1,4 @@
+/APPS/lib64/R/bin/BATCH: line 60: 20250 Terminated              ${R_HOME}/bin/R -f ${in} ${opts} ${R_BATCH_OPTIONS} > ${out} 2>&1
+/APPS/lib64/R/bin/BATCH: line 60: 20262 Terminated              ${R_HOME}/bin/R -f ${in} ${opts} ${R_BATCH_OPTIONS} > ${out} 2>&1
+/APPS/lib64/R/bin/BATCH: line 60: 20229 Terminated              ${R_HOME}/bin/R -f ${in} ${opts} ${R_BATCH_OPTIONS} > ${out} 2>&1
+/APPS/lib64/R/bin/BATCH: line 60: 20231 Terminated              ${R_HOME}/bin/R -f ${in} ${opts} ${R_BATCH_OPTIONS} > ${out} 2>&1

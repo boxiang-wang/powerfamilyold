@@ -133,7 +133,7 @@ Loading required package: lattice
 > (nzo.avg = apply(nzo,1,mean))
 [1]  2.4  1.7  0.0  1.8 10.0 18.1 10.0
 > (time.avg = apply(time,1,mean))
-[1] 390.5673 167.4217  40.2984   7.8368   7.6978   8.1079   6.5877
+[1] 116.2310  48.3064  11.6320   2.3457   2.3427   2.5407   1.9932
 > 
 > save(ans.avg, file=paste("ans", qv, ".rda", sep=""))
 > save(nzo.avg, file=paste("nzo", qv, ".rda", sep=""))
@@ -142,4 +142,4 @@ Loading required package: lattice
 > 
 > proc.time()
     user   system  elapsed 
-5995.637    0.773 6297.296 
+1854.726    0.225 1863.775 
