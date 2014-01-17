@@ -116,7 +116,7 @@ cvs.GCDpower <- function(x, y, lambda = NULL, nfolds = 5, foldid, delta = 2, qv 
   y <- c(-1, 1)[as.factor(drop(y))]
   
   # Fit a model first, in order to get lambda sequence
-  GCDpower.object <- gcdnetpower(x, y, lambda = lambda, delta = delta, qv = qv, 
+  GCDpower.object <- GCDpower(x, y, lambda = lambda, delta = delta, qv = qv, 
                                 ...)
   lambda <- GCDpower.object$lambda
   
@@ -136,7 +136,7 @@ cvs.GCDpower <- function(x, y, lambda = NULL, nfolds = 5, foldid, delta = 2, qv 
   #   on test sets.
   for (i in seq(nfolds)) {
     which <- foldid == i
-    outlist[[i]] <- gcdnetpower(x = x[!which, , drop = FALSE], 
+    outlist[[i]] <- GCDpower(x = x[!which, , drop = FALSE], 
                            y = y[!which], lambda = lambda, delta = delta,
                                 qv = qv, ...)
     preds <- predict(outlist[[i]], x[which, , drop = FALSE], type = "link")

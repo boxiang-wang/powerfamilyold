@@ -35,19 +35,19 @@ dat = FHT
 # timing 
 
 start1 = Sys.time()
-m = gcdnetpower(x=dat$x, y=dat$y,
+m = GCDpower(x=dat$x, y=dat$y,
                 lambda2=0.01, qv=2, method="power",eps=1e-8, standardize=F)
 stop1 = Sys.time()
 difftime(stop1, start1, units="secs")
 
 start1 = Sys.time()
-m1 = gcdnetpower(x=dat$x, y=dat$y,
+m1 = GCDpower(x=dat$x, y=dat$y,
                 lambda2=0.01, qv=1, method="power",eps=1e-8, standardize=F)
 stop1 = Sys.time()
 difftime(stop1, start1, units="secs")
 
 
-system.time(m <- gcdnetpower(x=dat$x, y=dat$y,
+system.time(m <- GCDpower(x=dat$x, y=dat$y,
                             lambda2=0.01, qv=2, method="power",eps=1e-8, standardize=F))[3]
 
 KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=1.5, thr=1e-03, 
@@ -55,7 +55,7 @@ KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=1.5, thr=1e-03,
 
 
 start1 = Sys.time()
-m = gcdnetpower(x=dat$x, y=dat$y,
+m = GCDpower(x=dat$x, y=dat$y,
                 lambda2=1.5, delta=2/9, method="hhsvm",eps=1e-8, standardize=F)
 stop1 = Sys.time()
 difftime(stop1, start1, units="secs")
@@ -78,18 +78,18 @@ coef.cvs = coef(cvs, s="lambda.1se")[-1,]
 length(coef.cvs[coef.cvs != 0])
 
 # nonzero beta
-m = gcdnetpower(x=dat$x, y=dat$y,
+m = GCDpower(x=dat$x, y=dat$y,
                 lambda2=1.5, delta=2/9, method="power",eps=1e-8, standardize=F)
 apply(coef(m), 2, function(x) length(x[x!=0]))
 
 m$lambda
 coef(m, s=m$lambda[1])
 
-m = gcdnetpower(x=dat$x, y=dat$y,
+m = GCDpower(x=dat$x, y=dat$y,
                 lambda2=1e-4, delta=2/9, method="power",eps=1e-8, standardize=F)
 sum(coef(m, s=0.1)!=0)
 
-m = gcdnetpower(x=dat$x, y=dat$y,
+m = GCDpower(x=dat$x, y=dat$y,
                 lambda2=1, delta=2/9, method="power",eps=1e-8, standardize=F)
 sum(coef(m, s=0.1)!=0)
 

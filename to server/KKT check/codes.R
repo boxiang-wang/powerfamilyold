@@ -1,4 +1,4 @@
-setwd("D:\\GitHub\\powerfamily\\to server")
+setwd("D:\\GitHub\\powerfamily")
 source("O_utilities.R")
 dyn.load("M_powerfamilyNET.dll")
 dyn.load("M_powerfamilyintNET.dll")
@@ -8,6 +8,8 @@ source("M_FHTgen.R")
 source("U_KKTcheckings.R")
 source("M_GCDpower.R")
 
+
+setwd("D:\\GitHub\\powerfamily\\to server")
 set.seed(1234)
 FHT = FHTgen(n=100, p=5000, rho=0.8)
 dat = FHT
@@ -20,7 +22,7 @@ l2 = 0
 qvalue = 0.5
 
 
-m <- gcdnetpower(x=dat$x,y=dat$y,
+m <- GCDpower(x=dat$x,y=dat$y,
                  lambda2=l2, qv=qvalue, method="power",
                  eps=1e-6, standardize=F)
 b0_6 = m$b0
@@ -34,7 +36,7 @@ save(betas_6, file="beta_6.rda")
 save(lambda_6, file="lambda_6.rda")
 
 
-m <- gcdnetpower(x=dat$x,y=dat$y,
+m <- GCDpower(x=dat$x,y=dat$y,
                  lambda2=l2, qv=qvalue, method="power",
                  eps=1e-7, standardize=F)
 b0_7 = m$b0
@@ -46,7 +48,7 @@ save(b0_7, file="b0_7.rda")
 save(betas_7, file="beta_7.rda")
 save(lambda_7, file="lambda_7.rda")
 
-m <- gcdnetpower(x=dat$x,y=dat$y,
+m <- GCDpower(x=dat$x,y=dat$y,
                  lambda2=l2, qv=qvalue, method="power",
                  eps=1e-8, standardize=F)
 b0_8 = m$b0
@@ -60,7 +62,7 @@ save(lambda_8, file="lambda_8.rda")
 
 
 
-m <- gcdnetpower(x=dat$x,y=dat$y,
+m <- GCDpower(x=dat$x,y=dat$y,
                  lambda2=l2, qv=qvalue, method="power",
                  eps=1e-9, standardize=F)
 b0_9 = m$b0
@@ -72,7 +74,7 @@ save(b0_9, file="b0_9.rda")
 save(betas_9, file="beta_9.rda")
 save(lambda_9, file="lambda_9.rda")
 
-m <- gcdnetpower(x=dat$x,y=dat$y,
+m <- GCDpower(x=dat$x,y=dat$y,
                  lambda2=l2, qv=qvalue, method="power",
                  eps=1e-10, standardize=F)
 b0_10 = m$b0

@@ -288,7 +288,7 @@ dat=FHT
 x=dat$x
 y=dat$y
 N=nrow(x)
-m = gcdnetpower(x=x, y=y,
+m = GCDpower(x=x, y=y,
                 lambda2 = l2, qv = qv, method="power")
 lambda = m$lambda
 # Parameters of the function
@@ -300,7 +300,7 @@ for (i in seq(nfolds)) {
   which <- foldid == i
   y_train <- y[!which]
   x_train <- x[!which, , drop = FALSE]
-  outlist[[i]] <- gcdnetpower(x = x_train, y = y_train, lambda = lambda,
+  outlist[[i]] <- GCDpower(x = x_train, y = y_train, lambda = lambda,
                               lambda2 = l2, qv = qv, method="power")
 }
 
@@ -366,62 +366,62 @@ obj
 
 
 # LASSO
-m1 <- gcdnetpower(x=FHT$x,y=FHT$y,
+m1 <- GCDpower(x=FHT$x,y=FHT$y,
                   #lambda=c(0.5,0.1),
                   lambda2=0, delta=0.01,method="hhsvm")
 pdf("lsolnpth_power.pdf",9,6)
 plot(m1, color=T)
 dev.off()
 
-m_100 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=100,method="power")
+m_100 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,qv=100,method="power")
 pdf("lsolnpth_power100.pdf",9,6)
 plot(m_100, color=T, main="q=100",xvar="lambda")
 dev.off()
 
-m_10 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=10,method="power")
+m_10 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,qv=10,method="power")
 pdf("lsolnpth_power10.pdf",9,6)
 plot(m_10, color=T, main="q=10",xvar="lambda")
 dev.off()
 
-m_5 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=5,method="power")
+m_5 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,qv=5,method="power")
 pdf("lsolnpth_power5.pdf",9,6)
 plot(m_5, color=T, main="q=5",xvar="lambda")
 dev.off()
 
-m_2 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=2,method="power")
+m_2 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,qv=2,method="power")
 pdf("lsolnpth_power2.pdf",9,6)
 plot(m_2, color=T, main="q=2",xvar="lambda")
 dev.off()
 
-m_1 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=1,method="power")
+m_1 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,qv=1,method="power")
 pdf("lsolnpth_power1.pdf",9,6)
 plot(m_1, color=T, main="q=1",xvar="lambda")
 dev.off()
 
-m_1_l_05 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0.5,qv=1,method="power")
+m_1_l_05 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0.5,qv=1,method="power")
 pdf("solnpth_power1_l05.pdf",9,6)
 plot(m_1_l_05 , color=T, main="q=1, lambda=0.5")
 dev.off()
 
-m_1_l_1 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=1,qv=1,method="power")
+m_1_l_1 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=1,qv=1,method="power")
 pdf("solnpth_power1_l1.pdf",9,6)
 plot(m_1_l_1 , color=T, main="q=1, lambda=1")
 dev.off()
 
 
-m_05 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=0.5,method="power")
+m_05 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,qv=0.5,method="power")
 pdf("lsolnpth_power05.pdf",9,6)
 plot(m_05, color=T, main="q=0.5",xvar="lambda")
 dev.off()
 
 
-m_01 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=0.1,method="power")
+m_01 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,qv=0.1,method="power")
 pdf("lsolnpth_power01.pdf",9,6)
 plot(m_01, color=T, main="q=0.1",xvar="lambda")
 dev.off()
 
 
-m_001 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,qv=0.01,method="power")
+m_001 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,qv=0.01,method="power")
 pdf("lsolnpth_power001.pdf",9,6)
 plot(m_001, color=T, main="q=0.01",xvar="lambda")
 dev.off()
@@ -433,44 +433,44 @@ dev.off()
 
 
 
-m_100 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=100,method="hhsvm")
+m_100 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,delta=100,method="hhsvm")
 pdf("hsolnpth_power100.pdf",9,6)
 plot(m_100, color=T, main="delta=100")
 dev.off()
 
-m_10 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=10,method="hhsvm")
+m_10 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,delta=10,method="hhsvm")
 pdf("hsolnpth_power10.pdf",9,6)
 plot(m_10, color=T, main="delta=10")
 dev.off()
 
-m_5 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=5,method="hhsvm")
+m_5 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,delta=5,method="hhsvm")
 pdf("hsolnpth_power5.pdf",9,6)
 plot(m_5, color=T, main="delta=5")
 dev.off()
 
-m_2 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=2,method="hhsvm")
+m_2 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,delta=2,method="hhsvm")
 pdf("hsolnpth_power2.pdf",9,6)
 plot(m_2, color=T, main="delta=2")
 dev.off()
 
-m_1 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=1,method="hhsvm")
+m_1 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,delta=1,method="hhsvm")
 pdf("hsolnpth_power1.pdf",9,6)
 plot(m_1, color=T, main="delta=1")
 dev.off()
 
-m_05 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=0.5,method="hhsvm")
+m_05 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,delta=0.5,method="hhsvm")
 pdf("hsolnpth_power05.pdf",9,6)
 plot(m_05, color=T, main="delta=0.5")
 dev.off()
 
 
-m_01 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=0.1,method="hhsvm")
+m_01 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,delta=0.1,method="hhsvm")
 pdf("hsolnpth_power01.pdf",9,6)
 plot(m_01, color=T, main="delta=0.1")
 dev.off()
 
 
-m_001 <- gcdnetpower(x=FHT$x,y=FHT$y,lambda2=0,delta=0.01,method="hhsvm")
+m_001 <- GCDpower(x=FHT$x,y=FHT$y,lambda2=0,delta=0.01,method="hhsvm")
 pdf("hsolnpth_power001.pdf",9,6)
 plot(m_001, color=T, main="delta=0.01")
 dev.off()
@@ -478,11 +478,11 @@ dev.off()
 
 
 
-m3 <- gcdnetpower(x=FHT$x,y=FHT$y,
+m3 <- GCDpower(x=FHT$x,y=FHT$y,
                   lambda2=0,qv=100,method="power")
 plot(m3, color=T)
 
-m4 <- gcdnetpower(x=FHT$x,y=FHT$y,        
+m4 <- GCDpower(x=FHT$x,y=FHT$y,        
                   lambda2=0,qv=1,method="power")
 plot(m4, color=T)
 
@@ -500,7 +500,7 @@ dat = spam[index,]
 x=dat[,1:57]
 
 start1=Sys.time()
-m1 <- gcdnetpower(x=x,y=dat$y,
+m1 <- GCDpower(x=x,y=dat$y,
                   #lambda=c(0.5,0.1),
                   lambda2=0, delta=2,method="hhsvm")
 plot(m1, color=T)
@@ -508,7 +508,7 @@ stop1=Sys.time()
 difftime(stop1, start1, units="secs")
 
 start1=Sys.time()
-m2 <- gcdnetpower(x=x,y=dat$y,
+m2 <- GCDpower(x=x,y=dat$y,
                   #lambda=c(0.5,0.1),
                   lambda2=0, qv=1,method="power")
 plot(m2, color=T)
@@ -518,7 +518,7 @@ difftime(stop1, start1, units="secs")
 
 
 start1=Sys.time()
-m1 <- gcdnetpower(x=train.x,y=train.y,
+m1 <- GCDpower(x=train.x,y=train.y,
                   #lambda=c(0.5,0.1),
                   lambda2=0.01, qv=2, method="power")
 stop1=Sys.time()
@@ -527,7 +527,7 @@ plot(m1, color=T)
 
 
 start1=Sys.time()
-m2 <- gcdnetpower(x=train.x,y=train.y,
+m2 <- GCDpower(x=train.x,y=train.y,
                   #lambda=c(0.5,0.1),
                   lambda2=0, qv=1, method="power",nlambda=10)
 plot(m2, color=T)
@@ -611,7 +611,7 @@ for(i in 1:qv.length)
 {
   
   print(i)
-  m = gcdnetpower(x=train.x,y=train.y,
+  m = GCDpower(x=train.x,y=train.y,
                   #lambda=lambda.seq,
                   lambda2=0, delta=qv.seq[i], qv=qv.seq[i], method="hhsvm",nlambda=100)
   for(j in 1:lambda.length)
@@ -632,7 +632,7 @@ b=cbind(c(NA,qv.seq),rbind(lambda.seq,nonzerobeta))
 
 
 
-m = gcdnetpower(x=train.x,y=train.y,
+m = GCDpower(x=train.x,y=train.y,
                 #lambda=lambda.seq,
                 lambda2=0, delta=0.01, qv=10, method="hhsvm")
 plot(m, color=F)
@@ -668,7 +668,7 @@ for(i in 1:qv.length)
 {
   
   print(i)
-  m = gcdnetpower(x=train.x,y=train.y,
+  m = GCDpower(x=train.x,y=train.y,
                   #lambda=lambda.seq,
                   lambda2=0, delta=qv.seq[i], qv=qv.seq[i], method="power",nlambda=100)
   for(j in 1:lambda.length)
@@ -695,7 +695,7 @@ hhsvmdtime = difftime(stop1, start1, units="secs")
 
 
 
-m = gcdnetpower(x=train.x,y=train.y,
+m = GCDpower(x=train.x,y=train.y,
                 #lambda=lambda.seq,
                 lambda2=0, delta=qv.seq[i], qv=qv.seq[i], method="power",nlambda=100)
 
@@ -703,7 +703,7 @@ pdf('spam_q_100.pdf', 9, 6)
 plot(m)
 dev.off()
 
-m00 = gcdnetpower(x=train.x,y=train.y,
+m00 = GCDpower(x=train.x,y=train.y,
                   #lambda=lambda.seq,
                   lambda2=0, delta=qv.seq[i], qv=1, method="power",nlambda=100)
 
@@ -712,7 +712,7 @@ plot(m00, color=T, main="q=1")
 dev.off()
 
 
-m01 = gcdnetpower(x=train.x,y=train.y,
+m01 = GCDpower(x=train.x,y=train.y,
                   #lambda=lambda.seq,
                   lambda2=1, delta=qv.seq[i], qv=1, method="power",nlambda=100)
 
@@ -723,7 +723,7 @@ coef(m)
 
 
 
-m1 = gcdnetpower(x=train.x,y=train.y,
+m1 = GCDpower(x=train.x,y=train.y,
                  #lambda=lambda.seq,
                  lambda2=0, delta=qv.seq[i], qv=100, method="power",nlambda=100)
 
@@ -733,7 +733,7 @@ dev.off()
 
 
 
-m2 = gcdnetpower(x=train.x,y=train.y,
+m2 = GCDpower(x=train.x,y=train.y,
                  #lambda=lambda.seq,
                  lambda2=0, delta=0.01, qv=1, method="hhsvm",nlambda=100)
 
@@ -779,7 +779,7 @@ qv = 2
 N <- nrow(x)
 ###Fit the model once to get dimensions etc of output
 y <- drop(y)
-GCDpower.object <- gcdnetpower(x, y, lambda = lambda, 
+GCDpower.object <- GCDpower(x, y, lambda = lambda, 
                                qv = qv, 
                                method="power",
                                lambda2=0)
@@ -790,7 +790,7 @@ nz <- sapply(coef(GCDpower.object, type = "nonzero"), length)
 for (i in seq(nfolds)) {
   which <- foldid == i
   y_sub <- y[!which]
-  outlist[[i]] <- gcdnetpower(x = x[!which, , drop = FALSE], 
+  outlist[[i]] <- GCDpower(x = x[!which, , drop = FALSE], 
                               y = y_sub, lambda = lambda,qv = qv, 
                               method="power",lambda2=0)
 }

@@ -30,7 +30,7 @@ cv.GCDpower <- function(x, y, lambda = NULL, pred.loss = "misclass",
   N <- nrow(x)
   ###Fit the model once to get dimensions etc of output
   y <- drop(y)
-  GCDpower.object <- gcdnetpower(x, y, lambda = lambda, delta = delta, qv = qv, 
+  GCDpower.object <- GCDpower(x, y, lambda = lambda, delta = delta, qv = qv, 
                           ...)
   lambda <- GCDpower.object$lambda
   # predict -> coef
@@ -44,7 +44,7 @@ cv.GCDpower <- function(x, y, lambda = NULL, pred.loss = "misclass",
   for (i in seq(nfolds)) {
     which <- foldid == i
     y_sub <- y[!which]
-    outlist[[i]] <- gcdnetpower(x = x[!which, , drop = FALSE], 
+    outlist[[i]] <- GCDpower(x = x[!which, , drop = FALSE], 
                            y = y_sub, lambda = lambda, delta = delta, qv = qv,...)
   }
   ###What to do depends on the pred.loss and the model fit

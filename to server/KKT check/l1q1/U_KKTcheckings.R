@@ -169,7 +169,7 @@ KKTperctg = function(dat, lambda2, qv, eps, thr)
   if(eps > 1) eps = 10 ^ (-eps)
   if(thr > 1) thr = 10 ^ (-thr)
   
-  m.temp = gcdnetpower(x=dat$x, y=dat$y,
+  m.temp = GCDpower(x=dat$x, y=dat$y,
                        lambda2=lambda2, qv=qv, method="power",eps=eps, standardize=F)
   
   KKT(m.temp$b0, m.temp$beta, dat$y, dat$x, m.temp$lambda, lambda2=lambda2, thr=thr, 

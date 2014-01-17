@@ -115,7 +115,7 @@ hsvmpath <- function(x, y, nlam, flmin, ulam, isd,
 } 
 
 
-gcdnetpower <- function(x, y, nlambda = 100, method = c("power","hhsvm"), 
+GCDpower <- function(x, y, nlambda = 100, method = c("power","hhsvm"), 
                         lambda.factor = ifelse(nobs < nvars, 0.01,1e-04), lambda = NULL, 
                         lambda2 = 0, pf = rep(1, nvars), pf2 = rep(1, nvars), exclude, 
                    dfmax = nvars + 1, pmax = min(dfmax * 1.2, nvars), standardize = TRUE, 

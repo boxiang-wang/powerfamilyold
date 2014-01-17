@@ -219,7 +219,7 @@ dyn.load("O_hsvmlassoNET.dll")
 
 
 
-m <- gcdnetpower(x=FHT$x,y=FHT$y,
+m <- GCDpower(x=FHT$x,y=FHT$y,
             #lambda=c(0.1,0.01),
             lambda2=1, qv=2, method="power",eps=1e-10, standardize=F)
 plot(m, color=T)
@@ -259,7 +259,7 @@ FHT = FHTgen(n=5000, p=100, rho=0.5)
 dat = FHT
 
 
-m = gcdnetpower(x=dat$x, y=dat$y,
+m = GCDpower(x=dat$x, y=dat$y,
                  lambda2=1, qv=0.5, method="power",eps=1e-8, standardize=F)
 
 
@@ -318,7 +318,7 @@ xtable(cbind(p1,p2))
 set.seed(1234)
 FHT = FHTgen(n=100, p=5000, rho=0.8)
 dat = FHT
-m <- gcdnetpower(x=dat$x,y=dat$y,
+m <- GCDpower(x=dat$x,y=dat$y,
                  #lambda=c(0.1,0.01),
                  lambda2=1, qv=2, method="power",eps=1e-4, standardize=F)
 KKT(m$b0, m$beta, dat$y, dat$x, m$lambda, lambda2=1, thr=10^(-5), 

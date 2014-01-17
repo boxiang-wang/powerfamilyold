@@ -67,7 +67,7 @@ dat$y = c(-1,1)[as.factor(y)]
 
 qv = 5
 start1 = Sys.time()
-m1 = gcdnetpower(x=dat$x, y=dat$y,
+m1 = GCDpower(x=dat$x, y=dat$y,
                 lambda2=1, qv=qv, method="power",eps=1e-8, maxit=3e7, standardize=F)
 stop1 = Sys.time()
 difftime(stop1, start1, units="secs")
